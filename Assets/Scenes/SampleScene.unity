@@ -389,6 +389,7 @@ GameObject:
   - component: {fileID: 370809735}
   - component: {fileID: 370809734}
   - component: {fileID: 370809733}
+  - component: {fileID: 370809736}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -574,6 +575,18 @@ MonoBehaviour:
   stressRecoveryRate: 6
   incapacitatedDuration: 3
   awakenedDuration: 5
+--- !u!114 &370809736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370809727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db5e7b7d4f36b1d47b3efb5fdb1d0700, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AssemblyTest
 --- !u!21 &463782142
 Material:
   serializedVersion: 8
