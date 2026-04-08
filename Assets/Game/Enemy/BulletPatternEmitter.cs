@@ -114,9 +114,9 @@ public class BulletPatternEmitter : MonoBehaviour
     {
         //네브 메쉬로 인해 탄환 생성 좌표가 강제로 올라가진걸 해결하기 위한 임시조치
 
-/*        Vector3 origin = transform.position + Vector3.up * 0.6f;
+        Vector3 origin = transform.position + Vector3.up * 0.6f;
         origin.y = 0.5f;
 
-        BulletHelper.Spawn(origin, direction, bulletSpeed, isPlayerBullet: false);*/
+        BulletHelper.Spawn(origin, direction, bulletSpeed, isPlayerBullet: false);
     }
 }
