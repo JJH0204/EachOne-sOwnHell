@@ -514,6 +514,7 @@ GameObject:
   - component: {fileID: 370809729}
   - component: {fileID: 370809728}
   - component: {fileID: 370809732}
+  - component: {fileID: 370809735}
   - component: {fileID: 370809734}
   - component: {fileID: 370809733}
   m_Layer: 0
@@ -654,7 +655,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 370809727}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3eb327459b5da954bb480ed969c2482b, type: 3}
+  m_Script: {fileID: 11500000, guid: 45d3527edd1334199bded8703705deac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  maxHP: 100
+  currentHP: 0
+  maxStress: 100
+  currentStress: 0
+  stressGainRate: 4
+  stressRecoveryRate: 6
+  incapacitatedDuration: 3
+  awakenedDuration: 5
+--- !u!114 &370809734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370809727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe402609aad2940d2b04a66e14aa74a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   moveSpeed: 6
@@ -665,12 +686,12 @@ MonoBehaviour:
     m_Name: Move
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: b3948494-8980-40aa-9788-e6c8f352ea5d
+    m_Id: d47ebc02-3ebe-4abf-9ebd-94435aba2076
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 2D Vector
-      m_Id: d702f7a9-af3b-42b9-8942-e62d127d23a8
+      m_Id: 52db04af-cad9-41fd-9da0-c1de9c339c4e
       m_Path: 2DVector
       m_Interactions: 
       m_Processors: 
@@ -678,7 +699,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 4
     - m_Name: up
-      m_Id: c5b0bf09-6a17-4cb5-9916-a7f72219ac61
+      m_Id: 2918bcb9-1a07-4450-a56f-c7896d08b2c3
       m_Path: <Keyboard>/w
       m_Interactions: 
       m_Processors: 
@@ -686,7 +707,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: down
-      m_Id: 49e1cdb4-ec0b-4422-8121-67221da5edfe
+      m_Id: 53821375-60de-4c7f-8b91-5deb8427df2a
       m_Path: <Keyboard>/s
       m_Interactions: 
       m_Processors: 
@@ -694,7 +715,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: left
-      m_Id: 8b614bf5-36a8-4bd6-bcc8-eff5227a8192
+      m_Id: 0a17b0c5-f449-47a5-995a-2c96377da5e2
       m_Path: <Keyboard>/a
       m_Interactions: 
       m_Processors: 
@@ -702,7 +723,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: right
-      m_Id: eecad5e7-e399-43e9-bd0f-ef05e0365ff0
+      m_Id: 5aaf3086-a044-4d4d-ac56-12d6e10f23b4
       m_Path: <Keyboard>/d
       m_Interactions: 
       m_Processors: 
@@ -710,7 +731,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     m_Flags: 0
---- !u!114 &370809734
+--- !u!114 &370809735
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -719,7 +740,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 370809727}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3cb20cd580a5c449bec8fdb6b268568, type: 3}
+  m_Script: {fileID: 11500000, guid: 45d3527edd1334199bded8703705deac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   maxHP: 100
@@ -2051,7 +2072,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2042908922}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 621c71ca577c48b4aa4772e847298483, type: 3}
+  m_Script: {fileID: 11500000, guid: cc5071a93a5d94d6496018fa7a117a1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   enemySpawnInterval: 5
