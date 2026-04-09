@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class TapToStart : MonoBehaviour
 {
-    public string nextSceneName = "SampleScene";
+    public string nextSceneName = "Arena";
 
     void Update()
     {
