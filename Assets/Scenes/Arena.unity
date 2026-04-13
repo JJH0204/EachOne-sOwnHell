@@ -547,6 +547,7 @@ GameObject:
   - component: {fileID: 370809732}
   - component: {fileID: 370809735}
   - component: {fileID: 370809734}
+  - component: {fileID: 370809736}
   m_Layer: 3
   m_Name: TestPlayer
   m_TagString: Player
@@ -646,7 +647,8 @@ Transform:
   m_LocalPosition: {x: -0.76591, y: 0.25, z: -0.53685}
   m_LocalScale: {x: 0.7, y: 0.85, z: 0.7}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 439872826}
   m_Father: {fileID: 853681885}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &370809732
@@ -692,6 +694,7 @@ MonoBehaviour:
   rotationSpeed: 600
   fireRate: 0.15
   bulletSpeed: 20
+  firePOoint: {fileID: 439872825}
   MoveAction:
     m_Name: Move
     m_Type: 0
@@ -778,6 +781,54 @@ MonoBehaviour:
   stressRecoveryRate: 6
   incapacitatedDuration: 3
   awakenedDuration: 5
+--- !u!114 &370809736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370809727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f6cb327d0ca96c4580467aef5d3fbf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::test_AutoAim
+  firePoint: {fileID: 0}
+  fireInterval: 0.3
+  attackRange: 10
+  bulletSpeed: 12
+  Stats: {fileID: 0}
+--- !u!1 &439872825
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 439872826}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &439872826
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 439872825}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.0941571, y: -0.29411763, z: 0.7669285}
+  m_LocalScale: {x: 1.4285713, y: 1.1764705, z: 1.4285713}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 370809731}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!21 &463782142
 Material:
   serializedVersion: 8
@@ -935,6 +986,7 @@ GameObject:
   - component: {fileID: 482386755}
   - component: {fileID: 482386754}
   - component: {fileID: 482386753}
+  - component: {fileID: 482386761}
   m_Layer: 3
   m_Name: Ada (MokUp)
   m_TagString: Player
@@ -967,7 +1019,7 @@ MonoBehaviour:
     m_SingletonActionBindings:
     - m_Name: 
       m_Id: 558dd079-8d0f-4f5b-9303-5ba314f61a67
-      m_Path: <Keyboard>/1
+      m_Path: <Mouse>/leftButton
       m_Interactions: 
       m_Processors: 
       m_Groups: 
@@ -984,7 +1036,7 @@ MonoBehaviour:
     m_SingletonActionBindings:
     - m_Name: 
       m_Id: 6a722637-6a94-4685-b794-fc7e67801454
-      m_Path: <Keyboard>/2
+      m_Path: <Mouse>/rightButton
       m_Interactions: 
       m_Processors: 
       m_Groups: 
@@ -1017,6 +1069,7 @@ MonoBehaviour:
   rotationSpeed: 600
   fireRate: 0.15
   bulletSpeed: 20
+  firePOoint: {fileID: 0}
   MoveAction:
     m_Name: Move
     m_Type: 0
@@ -1218,6 +1271,23 @@ Transform:
   - {fileID: 1163707843}
   m_Father: {fileID: 853681885}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &482386761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 482386752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f6cb327d0ca96c4580467aef5d3fbf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::test_AutoAim
+  firePoint: {fileID: 1163707843}
+  fireInterval: 0.3
+  attackRange: 10
+  bulletSpeed: 12
+  Stats: {fileID: 0}
 --- !u!1 &566181642
 GameObject:
   m_ObjectHideFlags: 0
@@ -1527,6 +1597,7 @@ GameObject:
   m_Component:
   - component: {fileID: 853681885}
   - component: {fileID: 853681884}
+  - component: {fileID: 853681886}
   m_Layer: 0
   m_Name: Playable Character
   m_TagString: Untagged
@@ -1600,6 +1671,23 @@ Transform:
   - {fileID: 482386760}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &853681886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853681883}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f6cb327d0ca96c4580467aef5d3fbf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::test_AutoAim
+  firePoint: {fileID: 439872826}
+  fireInterval: 0.3
+  attackRange: 10
+  bulletSpeed: 12
+  Stats: {fileID: 0}
 --- !u!1 &959787504
 GameObject:
   m_ObjectHideFlags: 0

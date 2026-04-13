@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     [Header("Shooting")]
     public float fireRate = 0.15f;   // 초당 발사 간격
     public float bulletSpeed = 20f;
+    public GameObject firePOoint;
 
     [Header("Input Action")]
     public InputAction MoveAction;
@@ -198,5 +199,5 @@ public class PlayerController : MonoBehaviour
             bulletSpeed,
             isPlayerBullet: true
         );
-    }
+    } 
 }

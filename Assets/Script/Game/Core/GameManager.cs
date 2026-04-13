@@ -180,8 +180,8 @@ public class GameManager : MonoBehaviour
 
         // ── 조작 안내 (우측 상단) ────────────────────────────
         GUI.color = new Color(1, 1, 1, 0.6f);
-        GUI.Label(new Rect(Screen.width - 220, 10, 210, 90),
-            "WASD : 이동\nLMB  : 사격\n적 처치 : 점수 획득\n스트레스 MAX → 전투 불능 → 각성\nQ,E : 캐릭터 변경");
+        GUI.Label(new Rect(Screen.width - 220, 10, 210, 110),
+            "WASD : 이동\nLMB  : 사격\n적 처치 : 점수 획득\n스트레스 MAX → 전투 불능 → 각성\nQ,E : 캐릭터 변경\n마우스 오른쪽,왼쪽 : 스킬1,2");
         GUI.color = Color.white;
     }
 
