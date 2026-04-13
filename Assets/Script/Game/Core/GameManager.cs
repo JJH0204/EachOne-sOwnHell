@@ -22,23 +22,23 @@ public class GameManager : MonoBehaviour
 
     [Header("Spawn Settings")]
     public float enemySpawnInterval = 5f;
-    public int   maxEnemies         = 5;
-    public float arenaRadius        = 12f;
+    public int maxEnemies = 5;
+    public float arenaRadius = 12f;
 
     public bool IsGameOver { get; private set; }
 
     // ─── 내부 상태 ─────────────────────────────────────────────
-    private int   score;
-    private int   currentEnemies;
+    private int score;
+    private int currentEnemies;
     private float nextSpawnTime = 2f;
     private string statusMessage;
-    private float  statusExpireTime;
+    private float statusExpireTime;
 
     // ─── HUD 레이아웃 상수 ────────────────────────────────────
-    const float BAR_X  = 16f;
-    const float BAR_Y  = 16f;
-    const float BAR_W  = 220f;
-    const float BAR_H  = 22f;
+    const float BAR_X = 16f;
+    const float BAR_Y = 16f;
+    const float BAR_W = 220f;
+    const float BAR_H = 22f;
     const float BAR_GAP = 30f;
 
     // ─── PlayerStats 참조 캐시 ─────────────────────────────────
@@ -76,23 +76,24 @@ public class GameManager : MonoBehaviour
     void SpawnEnemy()
     {
         // 아레나 가장자리에서 랜덤 위치 선택
-        Vector2 rim     = Random.insideUnitCircle.normalized * (arenaRadius * 0.88f);
+        Vector2 rim = Random.insideUnitCircle.normalized * (arenaRadius * 0.88f);
         Vector3 spawnPos = new Vector3(rim.x, 0f, rim.y);
 
         // 큐브 프리미티브로 적 생성
         GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
         go.name = "Enemy";
-        go.transform.position   = spawnPos;
+        go.tag = "Enemy";
+        go.transform.position = spawnPos;
         go.transform.localScale = new Vector3(0.8f, 1.2f, 0.8f);
 
         var rb = go.AddComponent<Rigidbody>();
-        rb.useGravity   = false;
+        rb.useGravity = false;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
-        rb.constraints  = RigidbodyConstraints.FreezePositionY
+        rb.constraints = RigidbodyConstraints.FreezePositionY
                         | RigidbodyConstraints.FreezeRotationX
                         | RigidbodyConstraints.FreezeRotationZ;
 
-        var enemy   = go.AddComponent<EnemyController>();
+        var enemy = go.AddComponent<EnemyController>();
         var emitter = go.AddComponent<BulletPatternEmitter>();
 
         // 랜덤 패턴 선택 (다양성)
@@ -111,7 +112,7 @@ public class GameManager : MonoBehaviour
     // ─── 상태 메시지 ───────────────────────────────────────────
     public void PostStatus(string msg, float duration = 2.5f)
     {
-        statusMessage    = msg;
+        statusMessage = msg;
         statusExpireTime = Time.time + duration;
     }
 
@@ -154,7 +155,7 @@ public class GameManager : MonoBehaviour
         float stressRatio = playerStats.currentStress / playerStats.maxStress;
         Color stressColor = Color.Lerp(new Color(0.3f, 0.5f, 1f), new Color(1f, 0.15f, 0.15f), stressRatio);
         string stressLabel = playerStats.IsIncapacitated ? "전투 불능!"
-                           : playerStats.IsAwakened      ? "각성!!"
+                           : playerStats.IsAwakened ? "각성!!"
                            : $"STRESS  {playerStats.currentStress:F0} / {playerStats.maxStress:F0}";
         DrawBar(BAR_X, BAR_Y + BAR_GAP, BAR_W, BAR_H, stressRatio, stressColor, stressLabel);
 
@@ -168,7 +169,7 @@ public class GameManager : MonoBehaviour
         {
             GUIStyle style = new GUIStyle(GUI.skin.label)
             {
-                fontSize  = 22,
+                fontSize = 22,
                 alignment = TextAnchor.MiddleCenter,
                 fontStyle = FontStyle.Bold
             };
@@ -180,7 +181,7 @@ public class GameManager : MonoBehaviour
         // ── 조작 안내 (우측 상단) ────────────────────────────
         GUI.color = new Color(1, 1, 1, 0.6f);
         GUI.Label(new Rect(Screen.width - 220, 10, 210, 90),
-            "WASD : 이동\nLMB  : 사격\n적 처치 : 점수 획득\n스트레스 MAX → 전투 불능 → 각성");
+            "WASD : 이동\nLMB  : 사격\n적 처치 : 점수 획득\n스트레스 MAX → 전투 불능 → 각성\nQ,E : 캐릭터 변경");
         GUI.color = Color.white;
     }
 
@@ -209,7 +210,7 @@ public class GameManager : MonoBehaviour
 
         GUIStyle titleStyle = new GUIStyle(GUI.skin.label)
         {
-            fontSize  = 42,
+            fontSize = 42,
             alignment = TextAnchor.MiddleCenter,
             fontStyle = FontStyle.Bold
         };
@@ -217,7 +218,7 @@ public class GameManager : MonoBehaviour
 
         GUIStyle subStyle = new GUIStyle(GUI.skin.label)
         {
-            fontSize  = 20,
+            fontSize = 20,
             alignment = TextAnchor.MiddleCenter
         };
         subStyle.normal.textColor = Color.white;
@@ -226,7 +227,7 @@ public class GameManager : MonoBehaviour
         float cy = Screen.height / 2f;
 
         GUI.Label(new Rect(cx - 200, cy - 80, 400, 70), "GAME OVER", titleStyle);
-        GUI.Label(new Rect(cx - 200, cy,       400, 40), $"FINAL SCORE : {score:N0}", subStyle);
-        GUI.Label(new Rect(cx - 200, cy + 50,  400, 30), "R 키 : 재시작", subStyle);
+        GUI.Label(new Rect(cx - 200, cy, 400, 40), $"FINAL SCORE : {score:N0}", subStyle);
+        GUI.Label(new Rect(cx - 200, cy + 50, 400, 30), "R 키 : 재시작", subStyle);
     }
 }

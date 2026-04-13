@@ -1,3 +1,5 @@
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,32 +17,36 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed     = 6f;
+    public float moveSpeed = 6f;
     public float rotationSpeed = 600f;
 
     [Header("Shooting")]
-    public float fireRate    = 0.15f;   // 초당 발사 간격
+    public float fireRate = 0.15f;   // 초당 발사 간격
     public float bulletSpeed = 20f;
 
-    // Input Action
+    [Header("Input Action")]
     public InputAction MoveAction;
-    private Vector2 MoveInput;
+    public InputAction RollAction;
 
+
+    private Vector2 MoveInput;
+    private bool isrolling;
+    private Vector3 previousPosition;
     // ─── 내부 참조 ─────────────────────────────────────────────
-    private Rigidbody   rb;
-    private Camera      mainCam;
+    private Rigidbody rb;
+    private Camera mainCam;
     private PlayerStats stats;
-    private float       nextFireTime;
+    private float nextFireTime;
 
     // ───────────────────────────────────────────────────────────
     void Start()
     {
-        rb      = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         mainCam = Camera.main;
-        stats   = GetComponent<PlayerStats>();
+        stats = GetComponent<PlayerStats>();
 
-        rb.useGravity  = false;
-        rb.interpolation    = RigidbodyInterpolation.Interpolate;
+        rb.useGravity = false;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.constraints = RigidbodyConstraints.FreezePositionY
                        | RigidbodyConstraints.FreezeRotationX
                        | RigidbodyConstraints.FreezeRotationZ;
@@ -67,17 +73,25 @@ public class PlayerController : MonoBehaviour
     void OnEnable()
     {
         MoveAction.performed += OnMove;
+        RollAction.performed += OnRoll;
+
+
         MoveAction.canceled += OnMove;
 
         MoveAction.Enable();
+        RollAction.Enable();
     }
 
     void OnDisable()
     {
         MoveAction.performed -= OnMove;
+        RollAction.performed -= OnRoll;
+
         MoveAction.canceled -= OnMove;
 
         MoveAction.Disable();
+        RollAction.Disable();
+
     }
 
     void OnMove(InputAction.CallbackContext context)
@@ -98,11 +112,64 @@ public class PlayerController : MonoBehaviour
 
         //카메라 방향이랑 키보드 입력 섞은뒤 월드 좌표 기준으로 움직이게 하기
         Vector3 moveDirection = (camForward * MoveInput.y) + (camRight * MoveInput.x);
-
         transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.World);
     }
 
 
+    void OnRoll(InputAction.CallbackContext context)
+    {
+        if (isrolling) return;
+        Vector3 camForward = mainCam.transform.forward;
+        Vector3 camRight = mainCam.transform.right;
+
+        camForward.y = 0f;
+        camRight.y = 0f;
+        camForward.Normalize();
+        camRight.Normalize();
+
+
+        Vector3 dir = (camForward * MoveInput.y) + (camRight * MoveInput.x);
+
+        if (dir.sqrMagnitude < 0.01f)
+        {
+            return;
+        }
+
+        Roll(dir.normalized);
+
+    }
+
+    void Roll(Vector3 dir)
+    {
+        previousPosition = transform.position;
+        isrolling = true;
+
+        Debug.Log("진짜로 구름");
+        transform.position += dir * 1f;
+        StartCoroutine(Wait());
+    }
+
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        // 물리적으로 벽에 쿵 부딪혔을 때
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            isrolling = false; // 구르기 취소
+        }
+    }
+
+
+    IEnumerator Wait()
+    {
+        Debug.Log("코루틴 시작");
+        yield return new WaitForSeconds(5.0f);
+        isrolling = false;
+        Debug.Log("코루틴 종료");
+
+
+    }
     // ─── 사격 ──────────────────────────────────────────────────
 
     void HandleShooting()
@@ -121,7 +188,7 @@ public class PlayerController : MonoBehaviour
         if (!plane.Raycast(ray, out float dist)) return;
 
         Vector3 target = ray.GetPoint(dist);
-        Vector3 dir    = target - transform.position;
+        Vector3 dir = target - transform.position;
         dir.y = 0f;
         if (dir.sqrMagnitude < 0.01f) return;
 
