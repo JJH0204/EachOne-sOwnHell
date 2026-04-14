@@ -197,7 +197,8 @@ public class PlayerController : MonoBehaviour
             transform.position + dir.normalized * 0.7f + Vector3.up * 0.5f,
             dir.normalized,
             bulletSpeed,
-            isPlayerBullet: true
+            isPlayerBullet: true,
+            isAutoAimBullet: false
         );
     } 
 }

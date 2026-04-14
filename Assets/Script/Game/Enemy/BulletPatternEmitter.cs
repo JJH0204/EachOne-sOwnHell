@@ -113,10 +113,17 @@ public class BulletPatternEmitter : MonoBehaviour
     void SpawnBullet(Vector3 direction)
     {
         //네브 메쉬로 인해 탄환 생성 좌표가 강제로 올라가진걸 해결하기 위한 임시조치
-
+        //origin.y = 0.5f;
         Vector3 origin = transform.position + Vector3.up * 0.6f;
         origin.y = 0.5f;
 
-        BulletHelper.Spawn(origin, direction, bulletSpeed, isPlayerBullet: false);
+        //Auto Aim 판별을 위해 함수 매개변수 5개로 증가하면서 코드 변경
+        BulletHelper.Spawn(
+            origin,
+            direction,
+            bulletSpeed,
+            isPlayerBullet: false,
+            isAutoAimBullet: false
+);
     }
 }
