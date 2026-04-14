@@ -12,25 +12,25 @@ public class test_AutoAim : MonoBehaviour
     [SerializeField] private float attackRange = 10f;
     [SerializeField] private float bulletSpeed = 12f;
 
+
     public PlayerStats Stats;
     private float nextFireTime;
-
 
     private void Start()
     {
         Stats = GetComponentInParent<PlayerStats>();
     }
 
-
-
     void Update()
     {
+
         if (Time.time < nextFireTime)
             return;
 
-        if (Stats.currentHP == 0)
+        if (Stats.currentHP <= 0)
         {
-            GetComponent<test_AutoAim>().enabled = false;
+            enabled = false;
+            return;
         }
 
         Transform target = FindClosestEnemy();
@@ -73,15 +73,14 @@ public class test_AutoAim : MonoBehaviour
     void Fire(Transform target)
     {
         Transform shootOrigin = firePoint != null ? firePoint : transform;
-
         Vector3 direction = (target.position - shootOrigin.position).normalized;
 
         BulletHelper.Spawn(
             shootOrigin.position,
             direction,
             bulletSpeed,
+            true,
             true
         );
     }
 }
-

@@ -1,9 +1,8 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-
 public static class BulletHelper
-
 {
     static Material s_playerMat;
     static Material s_enemyMat;
@@ -19,10 +18,7 @@ public static class BulletHelper
         }
     }
 
-
-
-    public static Bullet Spawn(Vector3 position, Vector3 direction, float speed, bool isPlayerBullet)
-
+    public static Bullet Spawn(Vector3 position, Vector3 direction, float speed, bool isPlayerBullet, bool isAutoAimBullet)
     {
         Bullet bullet = GetBullet(isPlayerBullet);
 
@@ -31,20 +27,37 @@ public static class BulletHelper
         bullet.gameObject.SetActive(true);
         bullet.Initialize(direction.normalized, speed, isPlayerBullet);
 
+        Renderer rend = bullet.GetComponent<Renderer>();
+
+        if (isPlayerBullet)
+        {
+            if (isAutoAimBullet)
+            {
+                // 오토에임 플레이어 총알 색
+                rend.material.color = new Color(0.20f, 0.80f, 1.00f);
+            }
+            else
+            {
+                // 일반 플레이어 총알 색
+                rend.material.color = new Color(1.00f, 0.90f, 0.10f);
+            }
+        }
+        else
+        {
+            // 적 총알 색
+            rend.material.color = new Color(1.00f, 0.20f, 0.20f);
+        }
+
         return bullet;
     }
 
-
-
     static Bullet GetBullet(bool isPlayerBullet)
-
     {
         for (int i = 0; i < s_pool.Count; i++)
         {
             Bullet bullet = s_pool[i];
 
             if (!bullet.gameObject.activeInHierarchy && bullet.isPlayerBullet == isPlayerBullet)
-
                 return bullet;
         }
 
@@ -56,7 +69,7 @@ public static class BulletHelper
 
     static Bullet CreateBullet(bool isPlayerBullet)
     {
-        //하이리아키 창에서 총알 저장 되는걸 Bullet Pool로 정리하기
+        // 하이리아키 창에서 총알 저장 되는걸 Bullet Pool로 정리하기
         GameObject go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         go.name = isPlayerBullet ? "PlayerBullet" : "EnemyBullet";
 
@@ -65,14 +78,11 @@ public static class BulletHelper
         {
             poolFolder = new GameObject("--- Bullet Pool ---");
         }
+
         go.transform.SetParent(poolFolder.transform);
 
-        go.name = isPlayerBullet ? "PlayerBullet" : "EnemyBullet";
-
         go.transform.localScale = isPlayerBullet
-
             ? new Vector3(0.22f, 0.22f, 0.22f)
-
             : new Vector3(0.30f, 0.30f, 0.30f);
 
         var rend = go.GetComponent<Renderer>();
@@ -82,24 +92,21 @@ public static class BulletHelper
             if (s_playerMat == null)
             {
                 s_playerMat = new Material(rend.sharedMaterial);
-
                 s_playerMat.color = new Color(1.00f, 0.90f, 0.10f);
             }
+
             rend.sharedMaterial = s_playerMat;
         }
-
         else
         {
             if (s_enemyMat == null)
             {
                 s_enemyMat = new Material(rend.sharedMaterial);
                 s_enemyMat.color = new Color(1.00f, 0.20f, 0.20f);
-
             }
+
             rend.sharedMaterial = s_enemyMat;
         }
-
-
 
         var col = go.GetComponent<SphereCollider>();
         col.isTrigger = true;
@@ -110,7 +117,5 @@ public static class BulletHelper
         s_pool.Add(bullet);
 
         return bullet;
-
     }
-
 }
