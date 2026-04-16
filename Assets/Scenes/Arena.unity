@@ -1718,7 +1718,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c0508e8d3f18c4daafc01858c6d695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDeath
-  difficulty: 0
+  difficulty: 1
   isDead: 0
   retryKey:
     m_Name: Retry Key
@@ -1727,7 +1727,15 @@ MonoBehaviour:
     m_Id: ba03609f-6595-47a8-9e89-10b77a514dff
     m_Processors: 
     m_Interactions: 
-    m_SingletonActionBindings: []
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 3f5d0cf9-3197-4453-9e64-0627816c3759
+      m_Path: <Keyboard>/r
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Retry Key
+      m_Flags: 0
     m_Flags: 0
   EndGameKey:
     m_Name: End Game Key
@@ -1736,11 +1744,19 @@ MonoBehaviour:
     m_Id: 92f89d24-5a42-44d8-8a35-18b81afbe892
     m_Processors: 
     m_Interactions: 
-    m_SingletonActionBindings: []
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 49fabf6a-5cde-413e-a5ae-dad4f6c807b9
+      m_Path: <Keyboard>/f
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: End Game Key
+      m_Flags: 0
     m_Flags: 0
   moveScript: {fileID: 482386754}
   autoAttackScript: {fileID: 482386761}
-  bEndingUnlockTime: 60
+  bEndingUnlockTime: 10
 --- !u!1 &566181642
 GameObject:
   m_ObjectHideFlags: 0
