@@ -19,6 +19,7 @@ public class Player_LaserAttack : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform firePoint;
+    [SerializeField] bool isUsingSkill = false;
 
     [Header("Shooting")]
     public float fireRate = 0.15f;   // 초당 발사 간격
@@ -65,6 +66,11 @@ public class Player_LaserAttack : MonoBehaviour
     private float nextFireTime;
 
     // ───────────────────────────────────────────────────────────
+    public bool IsUsingSkill
+    {
+        get { return isUsingSkill; }
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -72,13 +78,12 @@ public class Player_LaserAttack : MonoBehaviour
         stats = GetComponent<PlayerStats>();
         EnemyHP = GetComponent<EnemyController>();
 
-
-
         rb.useGravity = false;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.constraints = RigidbodyConstraints.FreezePositionY
                        | RigidbodyConstraints.FreezeRotationX
                        | RigidbodyConstraints.FreezeRotationZ;
+
     }
 
     void Update()
@@ -104,7 +109,7 @@ public class Player_LaserAttack : MonoBehaviour
 
     }
 
-    // ─── 스킬 ──────────────────────────────────────────────────
+    // ─── 스킬 키 입력 ──────────────────────────────────────────────────
 
     void OnEnable()
     {
@@ -128,22 +133,26 @@ public class Player_LaserAttack : MonoBehaviour
 
     void OnSkill1(InputAction.CallbackContext context)
     {
-        Debug.Log("스킬1 입력 들어감");
-        TryFirePierceLaser();
+        StartCoroutine(UseSkill1());
     }
 
     void OnSkill2Started(InputAction.CallbackContext context)
     {
+        if (isUsingSkill) return;
+
         isChannelingLaser = true;
-        Debug.Log("스킬2 입력 들어왔고 차징 시작함");
+        isUsingSkill = true;
     }
 
     void OnSkill2Canceld(InputAction.CallbackContext context)
     {
         isChannelingLaser = false;
-        Debug.Log("스킬2 입력 취소 됬고 발사됨");
+        isUsingSkill = false;
+        HideSkill2Laser();
     }
 
+
+    // ─── 스킬 ──────────────────────────────────────────────────
 
     void TryFirePierceLaser()
     {
@@ -270,7 +279,16 @@ public class Player_LaserAttack : MonoBehaviour
         Invoke(nameof(HideSkill2Laser), skill2LineDuration);
     }
 
+    IEnumerator UseSkill1()
+    {
+        isUsingSkill = true;
 
+        TryFirePierceLaser();
+
+        yield return new WaitForSeconds(3.0f);
+
+        isUsingSkill = false;
+    }
 
 }
 

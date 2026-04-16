@@ -1,5 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using static GameManager;
+using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem.Processors;
 
 /// <summary>
 /// 각자의 지옥 - 플레이어 스탯 시스템
@@ -12,6 +15,10 @@ using UnityEngine;
 [RequireComponent(typeof(Renderer))]
 public class PlayerStats : MonoBehaviour
 {
+
+    private PlayerDeath death;
+    private bool CancleAwake = false;
+
     [Header("HP")]
     public float maxHP      = 100f;
     public float currentHP;
@@ -23,6 +30,7 @@ public class PlayerStats : MonoBehaviour
     public float stressRecoveryRate    = 6f;   // 전투 외 초당 감소량
     public float incapacitatedDuration = 3f;   // 전투 불능 지속 시간(초)
     public float awakenedDuration      = 5f;   // 각성 지속 시간(초)
+
 
     // ─── 상태 플래그 ───────────────────────────────────────────
     public bool IsIncapacitated { get; private set; }
@@ -41,11 +49,17 @@ public class PlayerStats : MonoBehaviour
     private Coroutine  stressCoroutine;
 
     // ───────────────────────────────────────────────────────────
+
+    private void Awake()
+    {
+        death = GetComponent<PlayerDeath>();
+    }
     void Start()
     {
         currentHP     = maxHP;
         currentStress = 0f;
         renderers     = GetComponentsInChildren<Renderer>();
+        CancleAwake = false;
         SetColor(NormalColor);
     }
 
@@ -79,13 +93,24 @@ public class PlayerStats : MonoBehaviour
 
     void Die()
     {
-        onDeath?.Invoke();
-        GameManager.Instance?.TriggerGameOver();
+        if (death != null)
+        {
+            death.HandleDeath();
+            CancleAwake = true;
+        }
     }
+
+    public void ReviveForMockup(int hp)
+    {
+        currentHP = hp;
+        Debug.Log("부활 HP : " + currentHP);
+    }
+
 
     // ─── 전투 불능 → 각성 루틴 ────────────────────────────────
     IEnumerator IncapRoutine()
     {
+        if (CancleAwake) { yield break; } 
         IsIncapacitated = true;
         SetColor(IncapColor);
         GameManager.Instance?.PostStatus("전투 불능!");

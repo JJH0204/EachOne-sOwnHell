@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour
     public float fireRate = 0.15f;   // 초당 발사 간격
     public float bulletSpeed = 20f;
     public GameObject firePOoint;
+    public bool isLobby = false;
+    public bool tryShoot = false;
 
     [Header("Input Action")]
     public InputAction MoveAction;
@@ -33,6 +35,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 MoveInput;
     private bool isrolling;
     private Vector3 previousPosition;
+    private PlayerDeath death;
     // ─── 내부 참조 ─────────────────────────────────────────────
     private Rigidbody rb;
     private Camera mainCam;
@@ -57,6 +60,12 @@ public class PlayerController : MonoBehaviour
     {
         if (GameManager.Instance != null && GameManager.Instance.IsGameOver) return;
         if (stats.IsIncapacitated) return;
+
+        //로비에서 총알 발사 되는거 막기용 추후 로비 매니저로 옮길 예정
+        if (Mouse.current.leftButton.wasPressedThisFrame && isLobby == true)
+        {
+            Debug.Log("왼쪽 클릭되었으나 로비임으로 수동발사되지 않음");
+        }
 
         HandleShooting();
     }
@@ -97,6 +106,12 @@ public class PlayerController : MonoBehaviour
 
     void OnMove(InputAction.CallbackContext context)
     {
+        if (death != null && death.isDead)
+        {
+            MoveInput = Vector2.zero;
+            return;
+        }
+
         MoveInput = context.ReadValue<Vector2>();
     }
 
@@ -146,7 +161,7 @@ public class PlayerController : MonoBehaviour
         isrolling = true;
 
         Debug.Log("진짜로 구름");
-        transform.position += dir * 1f;
+        transform.position += dir * 3f;
         StartCoroutine(Wait());
     }
 
@@ -154,7 +169,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        // 물리적으로 벽에 쿵 부딪혔을 때
         if (collision.gameObject.CompareTag("Wall"))
         {
             isrolling = false; // 구르기 취소
@@ -165,7 +179,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator Wait()
     {
         Debug.Log("코루틴 시작");
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(1.0f);
         isrolling = false;
         Debug.Log("코루틴 종료");
 
@@ -175,6 +189,9 @@ public class PlayerController : MonoBehaviour
 
     void HandleShooting()
     {
+        //로비에서 총알 발사되는거 막기용
+        if (isLobby) { return; }
+
         var mouse = Mouse.current;
         if (mouse == null) return;
         if (!mouse.leftButton.isPressed) return;

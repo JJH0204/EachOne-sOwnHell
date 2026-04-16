@@ -655,7 +655,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f59183e05d534e4eac6e9aef2ebbb7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TapToStart
-  nextSceneName: Arena
+  nextSceneName: Test_Lobby
 --- !u!4 &1792297831
 Transform:
   m_ObjectHideFlags: 0

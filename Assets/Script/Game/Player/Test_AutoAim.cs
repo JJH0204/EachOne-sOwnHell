@@ -12,19 +12,32 @@ public class test_AutoAim : MonoBehaviour
     [SerializeField] private float attackRange = 10f;
     [SerializeField] private float bulletSpeed = 12f;
 
+    [SerializeField] private Player_LaserAttack Skill;
+
 
     public PlayerStats Stats;
+    private PlayerDeath death;
     private float nextFireTime;
+
 
     private void Start()
     {
         Stats = GetComponentInParent<PlayerStats>();
+        Skill = GetComponentInParent<Player_LaserAttack>();
+        death = GetComponent<PlayerDeath>();
     }
 
     void Update()
     {
 
+        if (death != null && death.isDead)
+            return;
+
+
         if (Time.time < nextFireTime)
+            return;
+
+        if (Skill != null && Skill.IsUsingSkill)
             return;
 
         if (Stats.currentHP <= 0)

@@ -18,6 +18,7 @@ using UnityEngine;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
+
     public static GameManager Instance { get; private set; }
 
     [Header("Spawn Settings")]
@@ -55,6 +56,7 @@ public class GameManager : MonoBehaviour
     {
         var playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null) playerStats = playerObj.GetComponent<PlayerStats>();
+        IsGameOver = false;
     }
 
     void Update()
@@ -230,4 +232,5 @@ public class GameManager : MonoBehaviour
         GUI.Label(new Rect(cx - 200, cy, 400, 40), $"FINAL SCORE : {score:N0}", subStyle);
         GUI.Label(new Rect(cx - 200, cy + 50, 400, 30), "R 키 : 재시작", subStyle);
     }
+
 }
