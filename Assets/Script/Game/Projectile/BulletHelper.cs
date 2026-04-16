@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public static class BulletHelper
@@ -18,9 +17,22 @@ public static class BulletHelper
         }
     }
 
+    public static void ClearPool()
+    {
+        s_pool.Clear();
+        s_playerMat = null;
+        s_enemyMat = null;
+    }
+
     public static Bullet Spawn(Vector3 position, Vector3 direction, float speed, bool isPlayerBullet, bool isAutoAimBullet)
     {
         Bullet bullet = GetBullet(isPlayerBullet);
+
+        if (bullet == null)
+        {
+            Debug.LogWarning("가져올 Bullet이 없음");
+            return null;
+        }
 
         bullet.transform.position = position;
         bullet.transform.rotation = Quaternion.LookRotation(direction.normalized);
@@ -32,19 +44,12 @@ public static class BulletHelper
         if (isPlayerBullet)
         {
             if (isAutoAimBullet)
-            {
-                // 오토에임 플레이어 총알 색
                 rend.material.color = new Color(0.20f, 0.80f, 1.00f);
-            }
             else
-            {
-                // 일반 플레이어 총알 색
                 rend.material.color = new Color(1.00f, 0.90f, 0.10f);
-            }
         }
         else
         {
-            // 적 총알 색
             rend.material.color = new Color(1.00f, 0.20f, 0.20f);
         }
 
@@ -53,9 +58,15 @@ public static class BulletHelper
 
     static Bullet GetBullet(bool isPlayerBullet)
     {
-        for (int i = 0; i < s_pool.Count; i++)
+        for (int i = s_pool.Count - 1; i >= 0; i--)
         {
             Bullet bullet = s_pool[i];
+
+            if (bullet == null)
+            {
+                s_pool.RemoveAt(i);
+                continue;
+            }
 
             if (!bullet.gameObject.activeInHierarchy && bullet.isPlayerBullet == isPlayerBullet)
                 return bullet;
@@ -69,7 +80,6 @@ public static class BulletHelper
 
     static Bullet CreateBullet(bool isPlayerBullet)
     {
-        // 하이리아키 창에서 총알 저장 되는걸 Bullet Pool로 정리하기
         GameObject go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         go.name = isPlayerBullet ? "PlayerBullet" : "EnemyBullet";
 
