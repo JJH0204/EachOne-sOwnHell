@@ -49,11 +49,9 @@ public class PlayerController : MonoBehaviour
         mainCam = Camera.main;
         stats = GetComponent<PlayerStats>();
 
-        rb.useGravity = false;
+        rb.useGravity = true;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
-        rb.constraints = RigidbodyConstraints.FreezePositionY
-                       | RigidbodyConstraints.FreezeRotationX
-                       | RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
     }
 
     void Update()
