@@ -43,7 +43,10 @@ public class PlayerController : MonoBehaviour
     private float nextFireTime;
 
     // ───────────────────────────────────────────────────────────
-    void Start()
+
+    #region Unity Methods
+
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
         mainCam = Camera.main;
@@ -53,14 +56,14 @@ public class PlayerController : MonoBehaviour
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
     }
-
-    void Update()
+    
+    private void Update()
     {
-        if (GameManager.Instance != null && GameManager.Instance.IsGameOver) return;
+        if (GameManager.Instance && GameManager.Instance.IsGameOver) return;
         if (stats.IsIncapacitated) return;
 
         //로비에서 총알 발사 되는거 막기용 추후 로비 매니저로 옮길 예정
-        if (Mouse.current.leftButton.wasPressedThisFrame && isLobby == true)
+        if (Mouse.current.leftButton.wasPressedThisFrame && isLobby)
         {
             Debug.Log("왼쪽 클릭되었으나 로비임으로 수동발사되지 않음");
         }
@@ -68,13 +71,15 @@ public class PlayerController : MonoBehaviour
         HandleShooting();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (GameManager.Instance != null && GameManager.Instance.IsGameOver) return;
         if (stats.IsIncapacitated) return;
 
         HandleMovement();
     }
+
+    #endregion
 
     // ─── 이동 ──────────────────────────────────────────────────
 
