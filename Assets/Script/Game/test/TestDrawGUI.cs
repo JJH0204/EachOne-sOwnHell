@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class TestDrawGUI : MonoBehaviour
 {
-    [Header("Å×½ºÆ® GUI")]
+    [Header("ï¿½×½ï¿½Æ® GUI")]
     public bool is_Lobby = false;
     public bool use_esc = false;
     public bool is_Arena = false;
@@ -72,7 +72,7 @@ public class TestDrawGUI : MonoBehaviour
         {
             GUI.color = new Color(1, 1, 1, 0.6f);
             GUI.Label(new Rect(Screen.width - 300, 10, 300, 110),
-                "WASD : ÀÌµ¿\n »ç°¢Çü À§¿¡¼­ ¿£ÅÍÅ° ´©¸¦½Ã Arena¾ÀÀ¸·Î ³Ñ¾î°¨");
+                "WASD : ï¿½Ìµï¿½\n ï¿½ç°¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Arenaï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾î°¨");
             GUI.color = Color.white;
         }
 
@@ -89,7 +89,7 @@ public class TestDrawGUI : MonoBehaviour
             };
             enemyCountStyle.normal.textColor = Color.white;
 
-            GUI.Label(new Rect(Screen.width / 2f - 100f, 20f, 200f, 40f), $"³²Àº ¸÷ ¼ö : {enemyCount}", enemyCountStyle);
+            GUI.Label(new Rect(Screen.width / 2f - 100f, 20f, 200f, 40f), $"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ : {enemyCount}", enemyCountStyle);
 
 
             DrawEnemyHPBars();
@@ -136,11 +136,11 @@ public class TestDrawGUI : MonoBehaviour
             GUI.DrawTexture(new Rect(statBoxX, statBoxY, statBoxW, statBoxH), Texture2D.whiteTexture);
             GUI.color = Color.white;
 
-            GUI.Label(new Rect(cx - 200, cy - 200, 400, 70), "ÀÏ½ÃÁ¤Áö", titleStyle);
-            GUI.Label(new Rect(cx - 650, cy - 80, 400, 70), "ÇöÀç ½ºÅÝ", StatsTitleStyle);
-            GUI.Label(new Rect(cx - 650, cy - -10, 200, 70), $"°ø°Ý·Â : {playerStats.Damage}", subStyle);
-            GUI.Label(new Rect(cx - 650, cy - -100, 200, 70), $"Ã¼·Â : {playerStats.currentHP} ", subStyle);
-            GUI.Label(new Rect(cx - 650, cy - -200, 200, 70), $"ÀÌ¼Ó : {playerController.moveSpeed} ", subStyle);
+            GUI.Label(new Rect(cx - 200, cy - 200, 400, 70), "ï¿½Ï½ï¿½ï¿½ï¿½ï¿½ï¿½", titleStyle);
+            GUI.Label(new Rect(cx - 650, cy - 80, 400, 70), "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½", StatsTitleStyle);
+            GUI.Label(new Rect(cx - 650, cy - -10, 200, 70), $"ï¿½ï¿½ï¿½Ý·ï¿½ : {playerStats.Damage}", subStyle);
+            GUI.Label(new Rect(cx - 650, cy - -100, 200, 70), $"Ã¼ï¿½ï¿½ : {playerStats.currentHP} ", subStyle);
+            GUI.Label(new Rect(cx - 650, cy - -200, 200, 70), $"ï¿½Ì¼ï¿½ : {playerController.moveSpeed} ", subStyle);
 
         }
 
@@ -171,8 +171,8 @@ public class TestDrawGUI : MonoBehaviour
         float skill1Remain = laserAttack.Skill1RemainCooldown;
         string skill2Text = laserAttack.IsUsingSkill ? "USING" : "READY";
 
-        DrawSkillBox(startX, startY, boxW, boxH, "½ºÅ³ 1", skill1Remain, skillStyle);
-        DrawSkill2Box(startX + boxW + gap, startY, boxW, boxH, "½ºÅ³ 2", skill2Text, skillStyle);
+        DrawSkillBox(startX, startY, boxW, boxH, "ï¿½ï¿½Å³ 1", skill1Remain, skillStyle);
+        DrawSkill2Box(startX + boxW + gap, startY, boxW, boxH, "ï¿½ï¿½Å³ 2", skill2Text, skillStyle);
     }
 
 
@@ -242,35 +242,35 @@ public class TestDrawGUI : MonoBehaviour
             EnemyController enemy = enemyObj.GetComponent<EnemyController>();
             if (enemy == null) continue;
 
-            // ¸Ó¸® À§ À§Ä¡
+            // ï¿½Ó¸ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¡
             Vector3 worldPos = enemyObj.transform.position + Vector3.up * 2.0f;
 
-            // ¿ùµå -> ½ºÅ©¸°
+            // ï¿½ï¿½ï¿½ï¿½ -> ï¿½ï¿½Å©ï¿½ï¿½
             Vector3 screenPos = cam.WorldToScreenPoint(worldPos);
 
-            // Ä«¸Þ¶ó µÚ¿¡ ÀÖÀ¸¸é ±×¸®Áö ¾ÊÀ½
+            // Ä«ï¿½Þ¶ï¿½ ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             if (screenPos.z <= 0f) continue;
 
-            // OnGUI´Â YÃàÀÌ ¹Ý´ë¶ó µÚÁý¾î¾ß ÇÔ
+            // OnGUIï¿½ï¿½ Yï¿½ï¿½ï¿½ï¿½ ï¿½Ý´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
             float x = screenPos.x - 40f;
             float y = Screen.height - screenPos.y - 10f;
 
             float barWidth = 80f;
             float barHeight = 10f;
 
-            // hp ºñÀ²
+            // hp ï¿½ï¿½ï¿½ï¿½
             float hpRatio = enemy.hp / enemy.hp;
             hpRatio = Mathf.Clamp01(hpRatio);
 
-            // ¹è°æ ¹Ù
+            // ï¿½ï¿½ï¿½ ï¿½ï¿½
             GUI.color = Color.black;
             GUI.DrawTexture(new Rect(x, y, barWidth, barHeight), Texture2D.whiteTexture);
 
-            // ÇöÀç hp ¹Ù
+            // ï¿½ï¿½ï¿½ï¿½ hp ï¿½ï¿½
             GUI.color = Color.red;
             GUI.DrawTexture(new Rect(x, y, barWidth * hpRatio, barHeight), Texture2D.whiteTexture);
 
-            // Å×µÎ¸®
+            // ï¿½×µÎ¸ï¿½
             GUI.color = Color.white;
             GUI.DrawTexture(new Rect(x, y, barWidth, 1f), Texture2D.whiteTexture);
             GUI.DrawTexture(new Rect(x, y + barHeight - 1f, barWidth, 1f), Texture2D.whiteTexture);

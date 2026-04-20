@@ -99,3 +99,7 @@ InitTestScene*.unity*
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
 .DS_Store
+
+# Large binary/video assets - excluded due to size
+Assets/StreamingAssets/Videos/
+Assets/Game/Legacy_Assets/

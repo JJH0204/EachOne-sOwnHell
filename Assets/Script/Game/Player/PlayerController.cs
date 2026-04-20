@@ -43,22 +43,23 @@ public class PlayerController : MonoBehaviour
     private float nextFireTime;
 
     // ───────────────────────────────────────────────────────────
-    void Start()
+
+    #region Unity Methods
+
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
         mainCam = Camera.main;
         stats = GetComponent<PlayerStats>();
 
-        rb.useGravity = false;
+        rb.useGravity = true;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
-        rb.constraints = RigidbodyConstraints.FreezePositionY
-                       | RigidbodyConstraints.FreezeRotationX
-                       | RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
     }
-
-    void Update()
+    
+    private void Update()
     {
-        if (GameManager.Instance != null && GameManager.Instance.IsGameOver) return;
+        if (GameManager.Instance && GameManager.Instance.IsGameOver) return;
         if (stats.IsIncapacitated) return;
 
         //로비에서 총알 발사 되는거 막기용 추후 로비 매니저로 옮길 예정
@@ -70,17 +71,15 @@ public class PlayerController : MonoBehaviour
         /*HandleShooting();*/
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (GameManager.Instance != null && GameManager.Instance.IsGameOver) return;
         if (stats.IsIncapacitated) return;
 
         HandleMovement();
     }
-
-    // ─── 이동 ──────────────────────────────────────────────────
-
-    void OnEnable()
+    
+    private void OnEnable()
     {
         MoveAction.performed += OnMove;
         RollAction.performed += OnRoll;
@@ -92,7 +91,7 @@ public class PlayerController : MonoBehaviour
         RollAction.Enable();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         MoveAction.performed -= OnMove;
         RollAction.performed -= OnRoll;
@@ -103,6 +102,10 @@ public class PlayerController : MonoBehaviour
         RollAction.Disable();
 
     }
+
+    #endregion
+
+    // ─── 이동 ──────────────────────────────────────────────────
 
     void OnMove(InputAction.CallbackContext context)
     {
@@ -185,8 +188,6 @@ public class PlayerController : MonoBehaviour
 
 
     }
-
-
     // ─── 사격 ──────────────────────────────────────────────────
 
 /*    void HandleShooting()
