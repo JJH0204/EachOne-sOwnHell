@@ -26,6 +26,9 @@ public class GameManager : MonoBehaviour
     public int maxEnemies = 5;
     public float arenaRadius = 12f;
 
+    [SerializeField] private GameObject expOrbPrefab;
+    [SerializeField] private GameObject itemPrefab;
+
     public bool IsGameOver { get; private set; }
 
     // ─── 내부 상태 ─────────────────────────────────────────────
@@ -97,6 +100,11 @@ public class GameManager : MonoBehaviour
 
         var enemy = go.AddComponent<EnemyController>();
         var emitter = go.AddComponent<BulletPatternEmitter>();
+
+        var drop = go.AddComponent <MonsterDrop>();
+        drop.Setup(expOrbPrefab, itemPrefab, 0.3f);
+
+
 
         // 랜덤 패턴 선택 (다양성)
         emitter.pattern = (BulletPatternEmitter.PatternType)Random.Range(0, 3);

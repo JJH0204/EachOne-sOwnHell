@@ -748,6 +748,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e10acfd1f3e9c940a52af7d56c293e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestDrawGUI
+  is_Lobby: 0
+  use_esc: 0
+  is_Arena: 0
+  is_Ada: 0
+  esc:
+    m_Name: Esc
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: a889b391-fc96-4d18-9d4b-55eb86f6ff91
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  Ada: {fileID: 0}
+  playerStats: {fileID: 0}
+  playerController: {fileID: 0}
+  laserAttack: {fileID: 0}
 --- !u!1 &698089248
 GameObject:
   m_ObjectHideFlags: 0
@@ -2284,12 +2301,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   maxHP: 100
   currentHP: 0
+  Damage: 10
   maxStress: 100
   currentStress: 0
   stressGainRate: 4
   stressRecoveryRate: 6
   incapacitatedDuration: 3
   awakenedDuration: 5
+  currentExp: 0
+  currentItem: 0
+  lvUp: {fileID: 0}
 --- !u!54 &1914899307
 Rigidbody:
   m_ObjectHideFlags: 0

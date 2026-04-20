@@ -16,9 +16,13 @@ public class ChangeCharacter : MonoBehaviour
 
     public CinemachineVirtualCameraBase vcam;
 
+    public TestDrawGUI GUI;
 
     void Start()
     {
+
+        if (!GUI) { Debug.Log("ï¿½ï¿½ï¿½Ù´Âµï¿½ï¿½ï¿½?"); }
+
         if (Ada.activeSelf)
         {
             vcam.Follow = Ada.transform;
@@ -56,11 +60,12 @@ public class ChangeCharacter : MonoBehaviour
 
         if (TestPlayer.activeSelf)
         {
-            Debug.Log("ÀÌ¹Ì Å×½ºÆ®ÇÃ·¹ÀÌ¾î Ä³¸¯ÅÍ ÀÔ´Ï´Ù");
+            Debug.Log("ï¿½Ì¹ï¿½ ï¿½×½ï¿½Æ®ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Ô´Ï´ï¿½");
         }
         else
         {
-            Debug.Log("Å×½ºÆ® ÇÃ·¹ÀÌ¾î ±³Ã¼ ¿Ï·á");
+            GUI.is_Ada = false;
+            Debug.Log("ï¿½×½ï¿½Æ® ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½Ã¼ ï¿½Ï·ï¿½");
         }
 
         Ada.SetActive(false);
@@ -76,11 +81,12 @@ public class ChangeCharacter : MonoBehaviour
     {
         if (Ada.activeSelf)
         {
-            Debug.Log("ÀÌ¹Ì ¿¡ÀÌ´Ù Ä³¸¯ÅÍ ÀÔ´Ï´Ù");
+            Debug.Log("ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Ô´Ï´ï¿½");
         }
         else
         {
-            Debug.Log("¿¡ÀÌ´Ù ±³Ã¼ ¿Ï·á");
+            GUI.is_Ada = true;
+            Debug.Log("ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½Ã¼ ï¿½Ï·ï¿½");
         }
 
         Ada.SetActive(true);

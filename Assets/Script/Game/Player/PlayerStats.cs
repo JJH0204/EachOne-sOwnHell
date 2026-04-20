@@ -23,6 +23,9 @@ public class PlayerStats : MonoBehaviour
     public float maxHP      = 100f;
     public float currentHP;
 
+    [Header("목업용(GUI) 테스트 버전 보여주기 스텟")]
+    public float Damage = 10f;
+
     [Header("Stress (스트레스 수치)")]
     public float maxStress             = 100f;
     public float currentStress;
@@ -30,6 +33,11 @@ public class PlayerStats : MonoBehaviour
     public float stressRecoveryRate    = 6f;   // 전투 외 초당 감소량
     public float incapacitatedDuration = 3f;   // 전투 불능 지속 시간(초)
     public float awakenedDuration      = 5f;   // 각성 지속 시간(초)
+
+    [Header("목업용 경험치")]
+    public int currentExp = 0;
+    public int currentItem = 0;
+    public LevelUpUI lvUp;
 
 
     // ─── 상태 플래그 ───────────────────────────────────────────
@@ -60,6 +68,7 @@ public class PlayerStats : MonoBehaviour
         currentStress = 0f;
         renderers     = GetComponentsInChildren<Renderer>();
         CancleAwake = false;
+        lvUp = GetComponent<LevelUpUI>();
         SetColor(NormalColor);
     }
 
@@ -105,6 +114,29 @@ public class PlayerStats : MonoBehaviour
         currentHP = hp;
         Debug.Log("부활 HP : " + currentHP);
     }
+
+    // ─── 경험치 ────────────────────────────────
+
+    public void AddExp(int amount)
+    {
+        currentExp += amount;
+        Debug.Log($"경험치 획득! +{amount} / 현재 경험치 : {currentExp}");
+
+        if (currentExp >= 10 && !lvUp.showLevelUpUI)
+        {
+            lvUp.showLevelUpUI = true;
+            Time.timeScale = 0f;
+            Debug.Log("amount 초기화"); currentExp -= 10;
+        }
+    }
+
+    public void AddItem(int amount2)
+    {
+        currentItem += amount2;
+        Debug.Log($"아이템 획득! +{amount2} / 현재 흭득 아이템 갯수 : {currentItem}");
+    }
+
+
 
 
     // ─── 전투 불능 → 각성 루틴 ────────────────────────────────

@@ -63,12 +63,12 @@ public class PlayerController : MonoBehaviour
         if (stats.IsIncapacitated) return;
 
         //로비에서 총알 발사 되는거 막기용 추후 로비 매니저로 옮길 예정
-        if (Mouse.current.leftButton.wasPressedThisFrame && isLobby)
+        if (Mouse.current.leftButton.wasPressedThisFrame && isLobby == true)
         {
             Debug.Log("왼쪽 클릭되었으나 로비임으로 수동발사되지 않음");
         }
 
-        HandleShooting();
+        /*HandleShooting();*/
     }
 
     private void FixedUpdate()
@@ -190,7 +190,7 @@ public class PlayerController : MonoBehaviour
     }
     // ─── 사격 ──────────────────────────────────────────────────
 
-    void HandleShooting()
+/*    void HandleShooting()
     {
         //로비에서 총알 발사되는거 막기용
         if (isLobby) { return; }
@@ -220,5 +220,5 @@ public class PlayerController : MonoBehaviour
             isPlayerBullet: true,
             isAutoAimBullet: false
         );
-    } 
+    } */
 }
