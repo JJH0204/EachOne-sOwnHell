@@ -78,12 +78,8 @@ public class PlayerController : MonoBehaviour
 
         HandleMovement();
     }
-
-    #endregion
-
-    // ─── 이동 ──────────────────────────────────────────────────
-
-    void OnEnable()
+    
+    private void OnEnable()
     {
         MoveAction.performed += OnMove;
         RollAction.performed += OnRoll;
@@ -95,7 +91,7 @@ public class PlayerController : MonoBehaviour
         RollAction.Enable();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         MoveAction.performed -= OnMove;
         RollAction.performed -= OnRoll;
@@ -106,6 +102,10 @@ public class PlayerController : MonoBehaviour
         RollAction.Disable();
 
     }
+
+    #endregion
+
+    // ─── 이동 ──────────────────────────────────────────────────
 
     void OnMove(InputAction.CallbackContext context)
     {
