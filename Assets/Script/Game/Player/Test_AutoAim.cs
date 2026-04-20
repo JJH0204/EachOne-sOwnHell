@@ -1,5 +1,3 @@
-using Unity.VisualScripting;
-using UnityEditorInternal;
 using UnityEngine;
 
 public class test_AutoAim : MonoBehaviour
