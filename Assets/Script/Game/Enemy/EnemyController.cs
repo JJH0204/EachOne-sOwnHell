@@ -32,6 +32,9 @@ public class EnemyController : MonoBehaviour
 
     public float lastHitTime;
     public int damage = 10;
+
+    public MonsterDrop drop;
+
     // ─── 이벤트 ────────────────────────────────────────────────
     public event System.Action onDeath;
 
@@ -68,6 +71,8 @@ public class EnemyController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         emitter = GetComponent<BulletPatternEmitter>();
         rend = GetComponentInChildren<Renderer>();
+
+        drop = GetComponent<MonsterDrop>();
 
         // Rigidbody 기본 설정
         rb.useGravity = false;
@@ -207,6 +212,11 @@ public class EnemyController : MonoBehaviour
         state = State.Dead;
         ActiveCount--;
 
+        if (drop != null)
+        {
+            drop.DropItems();
+        }
+
         if (agent != null && agent.isOnNavMesh)
             agent.ResetPath();
 
@@ -217,6 +227,7 @@ public class EnemyController : MonoBehaviour
         GameManager.Instance?.AddScore(scoreValue);
 
         Destroy(gameObject, 0.2f);
+
     }
 
     void SetColor(Color c)

@@ -549,6 +549,7 @@ GameObject:
   - component: {fileID: 370809734}
   - component: {fileID: 370809736}
   - component: {fileID: 370809737}
+  - component: {fileID: 370809738}
   m_Layer: 3
   m_Name: TestPlayer
   m_TagString: Player
@@ -778,12 +779,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   maxHP: 100
   currentHP: 0
+  Damage: 10
   maxStress: 100
   currentStress: 0
   stressGainRate: 4
   stressRecoveryRate: 6
   incapacitatedDuration: 3
   awakenedDuration: 5
+  currentExp: 0
+  currentItem: 0
+  lvUp: {fileID: 370809738}
 --- !u!114 &370809736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -791,7 +796,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 370809727}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f6cb327d0ca96c4580467aef5d3fbf9, type: 3}
   m_Name: 
@@ -853,6 +858,19 @@ MonoBehaviour:
   moveScript: {fileID: 370809734}
   autoAttackScript: {fileID: 370809736}
   bEndingUnlockTime: 10
+--- !u!114 &370809738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370809727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0e96871254a810448133c1324c63126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelUpUI
+  showLevelUpUI: 0
 --- !u!1 &439872825
 GameObject:
   m_ObjectHideFlags: 0
@@ -1220,6 +1238,7 @@ GameObject:
   - component: {fileID: 482386763}
   - component: {fileID: 482386762}
   - component: {fileID: 482386764}
+  - component: {fileID: 482386765}
   m_Layer: 3
   m_Name: Ada (MokUp)
   m_TagString: Player
@@ -1386,12 +1405,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   maxHP: 100
   currentHP: 100
+  Damage: 10
   maxStress: 100
   currentStress: 0
   stressGainRate: 4
   stressRecoveryRate: 6
   incapacitatedDuration: 3
   awakenedDuration: 5
+  currentExp: 0
+  currentItem: 0
+  lvUp: {fileID: 482386765}
 --- !u!54 &482386756
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1757,6 +1780,19 @@ MonoBehaviour:
   moveScript: {fileID: 482386754}
   autoAttackScript: {fileID: 482386761}
   bEndingUnlockTime: 10
+--- !u!114 &482386765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 482386752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0e96871254a810448133c1324c63126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelUpUI
+  showLevelUpUI: 0
 --- !u!1 &566181642
 GameObject:
   m_ObjectHideFlags: 0
@@ -2122,6 +2158,7 @@ MonoBehaviour:
       m_Flags: 0
     m_Flags: 0
   vcam: {fileID: 78768771}
+  GUI: {fileID: 1245629021}
 --- !u!4 &853681885
 Transform:
   m_ObjectHideFlags: 0
@@ -2725,6 +2762,75 @@ Transform:
   m_Children: []
   m_Father: {fileID: 482386760}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1245629019
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1245629020}
+  - component: {fileID: 1245629021}
+  m_Layer: 0
+  m_Name: GUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1245629020
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245629019}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1794251525}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1245629021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245629019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e10acfd1f3e9c940a52af7d56c293e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDrawGUI
+  is_Lobby: 0
+  use_esc: 0
+  is_Arena: 0
+  is_Ada: 0
+  esc:
+    m_Name: Esc
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 8804166f-6487-41ad-a423-8e5042e647e4
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 6c152083-447b-4c0f-9a8b-35c1e6dd85b6
+      m_Path: <Keyboard>/escape
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Esc
+      m_Flags: 0
+    m_Flags: 0
+  Ada: {fileID: 482386752}
+  playerStats: {fileID: 370809735}
+  playerController: {fileID: 370809734}
+  laserAttack: {fileID: 482386753}
 --- !u!1 &1451133355
 GameObject:
   m_ObjectHideFlags: 0
@@ -3078,6 +3184,7 @@ Transform:
   m_Children:
   - {fileID: 183018989}
   - {fileID: 2042908924}
+  - {fileID: 1245629020}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1829126304
@@ -3380,6 +3487,8 @@ MonoBehaviour:
   enemySpawnInterval: 1
   maxEnemies: 30
   arenaRadius: 14
+  expOrbPrefab: {fileID: 6186754142981803850, guid: 7af3e30da6d724748ac5300fea90bb29, type: 3}
+  itemPrefab: {fileID: 6088315225354371719, guid: 324fe82b54e987f4fa110e49edac6b2b, type: 3}
 --- !u!1 &2062090258
 GameObject:
   m_ObjectHideFlags: 0

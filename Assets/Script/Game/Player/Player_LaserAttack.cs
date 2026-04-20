@@ -109,6 +109,13 @@ public class Player_LaserAttack : MonoBehaviour
 
     }
 
+    public float Skill1RemainCooldown
+    {
+        get { return Mathf.Max(0f, nextSkill1Time - Time.time); }
+    }
+
+
+
     // ─── 스킬 키 입력 ──────────────────────────────────────────────────
 
     void OnEnable()

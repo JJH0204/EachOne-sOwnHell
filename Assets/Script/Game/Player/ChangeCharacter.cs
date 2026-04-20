@@ -16,9 +16,13 @@ public class ChangeCharacter : MonoBehaviour
 
     public CinemachineVirtualCameraBase vcam;
 
+    public TestDrawGUI GUI;
 
     void Start()
     {
+
+        if (!GUI) { Debug.Log("없다는데요?"); }
+
         if (Ada.activeSelf)
         {
             vcam.Follow = Ada.transform;
@@ -60,6 +64,7 @@ public class ChangeCharacter : MonoBehaviour
         }
         else
         {
+            GUI.is_Ada = false;
             Debug.Log("테스트 플레이어 교체 완료");
         }
 
@@ -80,6 +85,7 @@ public class ChangeCharacter : MonoBehaviour
         }
         else
         {
+            GUI.is_Ada = true;
             Debug.Log("에이다 교체 완료");
         }
 

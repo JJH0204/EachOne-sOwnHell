@@ -67,7 +67,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("왼쪽 클릭되었으나 로비임으로 수동발사되지 않음");
         }
 
-        HandleShooting();
+        /*HandleShooting();*/
     }
 
     void FixedUpdate()
@@ -185,9 +185,11 @@ public class PlayerController : MonoBehaviour
 
 
     }
+
+
     // ─── 사격 ──────────────────────────────────────────────────
 
-    void HandleShooting()
+/*    void HandleShooting()
     {
         //로비에서 총알 발사되는거 막기용
         if (isLobby) { return; }
@@ -217,5 +219,5 @@ public class PlayerController : MonoBehaviour
             isPlayerBullet: true,
             isAutoAimBullet: false
         );
-    } 
+    } */
 }
