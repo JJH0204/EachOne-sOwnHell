@@ -10,21 +10,21 @@ public class PlayerDeath : MonoBehaviour
         A, B
     }
 
-    [Header("³­ÀÌµµ")]
+    [Header("ë‚œì´ë„")]
     public Difficulty difficulty = Difficulty.A;
 
-    [Header("Á×À½ »óÅÂ")]
+    [Header("ì£½ìŒ ìƒíƒœ")]
     public bool isDead = false;
 
-    [Header("»ç¸Á½Ã Å° ÀÔ·Â")]
+    [Header("ì‚¬ë§ì‹œ í‚¤ ì…ë ¥")]
     public InputAction retryKey;
     public InputAction EndGameKey;
 
-    [Header("¸·À» ½ºÅ©¸³Æ®")]
+    [Header("ë§‰ì„ ìŠ¤í¬ë¦½íŠ¸")]
     public PlayerController moveScript;
     public test_AutoAim autoAttackScript;
 
-    [Header("B ³­ÀÌµµ Å¸ÀÌ¸Ó")]
+    [Header("B ë‚œì´ë„ íƒ€ì´ë¨¸")]
     [SerializeField] private float bEndingUnlockTime = 60f;
     [SerializeField] private Coroutine bTimerCoroutine;
 
@@ -85,14 +85,14 @@ public class PlayerDeath : MonoBehaviour
 
         bTimerStarted = false;
 
-        // A ³­ÀÌµµ¸é Á×ÀÚ¸¶ÀÚ ¹Ù·Î ¿£µù
+        // A ë‚œì´ë„ë©´ ì£½ìë§ˆì ë°”ë¡œ ì—”ë”©
         if (difficulty == Difficulty.A)
         {
             SceneManager.LoadScene("Test_EndingA");
             return;
         }
 
-        // B ³­ÀÌµµ´Â UI ¶ç¿ì°í ¼±ÅÃÁö Á¦°ø
+        // B ë‚œì´ë„ëŠ” UI ë„ìš°ê³  ì„ íƒì§€ ì œê³µ
     }
 
     void ContinueB()
@@ -154,20 +154,20 @@ public class PlayerDeath : MonoBehaviour
 
     void StartBTimerRoutine()
     {
-        // È¤½Ã ÀÌ¹Ì µ¹°í ÀÖÀ¸¸é ¸ÕÀú ²÷±â
+        // í˜¹ì‹œ ì´ë¯¸ ëŒê³  ìˆìœ¼ë©´ ë¨¼ì € ëŠê¸°
         if (bTimerCoroutine != null)
         {
             StopCoroutine(bTimerCoroutine);
         }
 
-        // »óÅÂ ÃÊ±âÈ­
+        // ìƒíƒœ ì´ˆê¸°í™”
         bTimerStarted = true;
         bEndingUnlocked = false;
 
         bTimerCoroutine = StartCoroutine(StartBTimer());
     }
 
-    // ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ ¿£µù GUI ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ
+    // ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ ì—”ë”© GUI ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡ã…¡
 
     private void OnGUI()
     {
@@ -191,14 +191,14 @@ public class PlayerDeath : MonoBehaviour
 
         GUI.Label(new Rect(0, 120, Screen.width, 50), "GAME OVER", titleStyle);
 
-        string optionText = "R : ºÎÈ°";
+        string optionText = "R : ë¶€í™œ";
 
         if (difficulty == Difficulty.B && bEndingUnlocked)
         {
-            optionText = "R : ºÎÈ° / F : ¿£µù";
+            optionText = "R : ë¶€í™œ / F : ì—”ë”©";
         }
 
-        GUI.Label(new Rect(0, 220, Screen.width, 40), "³­ÀÌµµ : " + difficulty, textStyle);
+        GUI.Label(new Rect(0, 220, Screen.width, 40), "ë‚œì´ë„ : " + difficulty, textStyle);
         GUI.Label(new Rect(0, 260, Screen.width, 40), optionText, textStyle);
     }
 }

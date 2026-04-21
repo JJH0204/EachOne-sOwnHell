@@ -5,14 +5,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// ������ ���� - �÷��̾� ��Ʈ�ѷ� (Grey Box)
+/// 각자의 지옥 - 플레이어 컨트롤러 (Grey Box)
 ///
-/// ����:
-///   �̵�  : WASD (ī�޶� ���� ��� ����)
-///   ���  : ���콺 ���� ��ư (���콺 ��ġ ����)
-///   ȸ��  : Space (���, TODO)
+/// 조작:
+///   이동  : WASD (카메라 기준 상대 방향)
+///   사격  : 마우스 왼쪽 버튼 (마우스 위치 조준)
+///   회피  : Space (대시, TODO)
 ///
-/// ���� ���¿����� �̵��ӵ����߻�ӵ� 1.5�� ���.
+/// 각성 상태에서는 이동속도·발사속도 1.5배 상승.
 /// </summary>
 [RequireComponent(typeof(Rigidbody), typeof(PlayerStats))]
 public class Player_LaserAttack : MonoBehaviour
@@ -22,7 +22,7 @@ public class Player_LaserAttack : MonoBehaviour
     [SerializeField] bool isUsingSkill = false;
 
     [Header("Shooting")]
-    public float fireRate = 0.15f;   // �ʴ� �߻� ����
+    public float fireRate = 0.15f;   // 초당 발사 간격
     public float bulletSpeed = 20f;
 
     [Header("inputAction")]
@@ -59,13 +59,13 @@ public class Player_LaserAttack : MonoBehaviour
     private EnemyController EnemyHP;
     private float EnemyHealth;
 
-    // ������ ���� ���� ������������������������������������������������������������������������������������������
+    // ─── 내부 참조 ─────────────────────────────────────────────
     private Rigidbody rb;
     private Camera mainCam;
     private PlayerStats stats;
     private float nextFireTime;
 
-    // ����������������������������������������������������������������������������������������������������������������������
+    // ───────────────────────────────────────────────────────────
     public bool IsUsingSkill
     {
         get { return isUsingSkill; }
@@ -116,7 +116,7 @@ public class Player_LaserAttack : MonoBehaviour
 
 
 
-    // ������ ��ų Ű �Է� ����������������������������������������������������������������������������������������������������
+    // ─── 스킬 키 입력 ──────────────────────────────────────────────────
 
     void OnEnable()
     {
@@ -159,7 +159,7 @@ public class Player_LaserAttack : MonoBehaviour
     }
 
 
-    // ������ ��ų ����������������������������������������������������������������������������������������������������
+    // ─── 스킬 ──────────────────────────────────────────────────
 
     void TryFirePierceLaser()
     {
@@ -190,7 +190,7 @@ public class Player_LaserAttack : MonoBehaviour
 
         ShowSkill1Laser(origin, endPoint);
 
-        Debug.Log("��ų1 ���� ������ �߻�");
+        Debug.Log("스킬1 관통 레이저 발사");
     }
 
     void ShowSkill1Laser(Vector3 start, Vector3 end)
@@ -302,7 +302,7 @@ public class Player_LaserAttack : MonoBehaviour
 
 
 
-// ������ ��� ����������������������������������������������������������������������������������������������������
+// ─── 사격 ──────────────────────────────────────────────────
 
 /*void HandleShooting()
     {
@@ -314,7 +314,7 @@ public class Player_LaserAttack : MonoBehaviour
         if (Time.time < nextFireTime) return;
         nextFireTime = Time.time + rate;
 
-        // ���콺 ��ġ �� ���� ������
+        // 마우스 위치 → 지면 교차점
         Ray ray = mainCam.ScreenPointToRay(mouse.position.ReadValue());
         var plane = new Plane(Vector3.up, transform.position);
         if (!plane.Raycast(ray, out float dist)) return;

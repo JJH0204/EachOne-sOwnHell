@@ -15168,6 +15168,67 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1327578002}
   m_SourcePrefab: {fileID: 100100000, guid: 07d4a16e8867fff4b802d73ac034e674, type: 3}
+--- !u!1 &1862562376
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1862562378}
+  - component: {fileID: 1862562377}
+  m_Layer: 0
+  m_Name: TestDrawGUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1862562377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1862562376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e10acfd1f3e9c940a52af7d56c293e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestDrawGUI
+  is_Lobby: 0
+  use_esc: 0
+  is_Arena: 0
+  is_Ada: 0
+  esc:
+    m_Name: Esc
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 39e65e96-3883-4cf3-ac97-547168b602c6
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  Ada: {fileID: 0}
+  playerStats: {fileID: 0}
+  playerController: {fileID: 0}
+  laserAttack: {fileID: 0}
+--- !u!4 &1862562378
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1862562376}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -13.31474, y: 0, z: -0.29366}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1870664755
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17358,5 +17419,6 @@ SceneRoots:
   - {fileID: 920287986}
   - {fileID: 1808336063}
   - {fileID: 1708867757}
+  - {fileID: 1862562378}
   - {fileID: 55469676}
   - {fileID: 271278270}

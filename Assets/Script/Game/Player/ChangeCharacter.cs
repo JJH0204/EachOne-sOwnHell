@@ -21,7 +21,7 @@ public class ChangeCharacter : MonoBehaviour
     void Start()
     {
 
-        if (!GUI) { Debug.Log("���ٴµ���?"); }
+        if (!GUI) { Debug.Log("없다는데요?"); }
 
         if (Ada.activeSelf)
         {
@@ -60,12 +60,12 @@ public class ChangeCharacter : MonoBehaviour
 
         if (TestPlayer.activeSelf)
         {
-            Debug.Log("�̹� �׽�Ʈ�÷��̾� ĳ���� �Դϴ�");
+            Debug.Log("이미 테스트플레이어 캐릭터 입니다");
         }
         else
         {
             GUI.is_Ada = false;
-            Debug.Log("�׽�Ʈ �÷��̾� ��ü �Ϸ�");
+            Debug.Log("테스트 플레이어 교체 완료");
         }
 
         Ada.SetActive(false);
@@ -81,12 +81,12 @@ public class ChangeCharacter : MonoBehaviour
     {
         if (Ada.activeSelf)
         {
-            Debug.Log("�̹� ���̴� ĳ���� �Դϴ�");
+            Debug.Log("이미 에이다 캐릭터 입니다");
         }
         else
         {
             GUI.is_Ada = true;
-            Debug.Log("���̴� ��ü �Ϸ�");
+            Debug.Log("에이다 교체 완료");
         }
 
         Ada.SetActive(true);

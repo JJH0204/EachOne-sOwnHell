@@ -30,7 +30,7 @@ public class Test_EnterTheArena : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
-        Debug.Log("ÇÃ·¹ÀÌ¾î °¨ÁöµÊ");
+        Debug.Log("í”Œë ˆì´ì–´ ê°ì§€ë¨");
     }
 
 }

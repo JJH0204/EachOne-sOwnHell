@@ -3,15 +3,15 @@ using UnityEngine;
 [RequireComponent(typeof(LineRenderer))]
 public class AttackRangeDrawer : MonoBehaviour
 {
-    public int segments = 50; // ¿øÀ» ±¸¼ºÇÏ´Â ¼±ÀÇ °³¼ö
-    public float radius = 5f; // °ø°İ »ç°Å¸®
+    public int segments = 50; // ì›ì„ êµ¬ì„±í•˜ëŠ” ì„ ì˜ ê°œìˆ˜
+    public float radius = 5f; // ê³µê²© ì‚¬ê±°ë¦¬
     private LineRenderer line;
 
     void Awake()
     {
         line = GetComponent<LineRenderer>();
         line.positionCount = segments + 1;
-        line.useWorldSpace = false; // ¿ÀºêÁ§Æ® ÀÌµ¿ ½Ã ÇÔ²² ÀÌµ¿ÇÏµµ·Ï ¼³Á¤
+        line.useWorldSpace = false; // ì˜¤ë¸Œì íŠ¸ ì´ë™ ì‹œ í•¨ê»˜ ì´ë™í•˜ë„ë¡ ì„¤ì •
         DrawCircle();
     }
 
@@ -37,7 +37,7 @@ public class AttackRangeDrawer : MonoBehaviour
         float angle = 0f;
         for (int i = 0; i <= segments; i++)
         {
-            // È£µµ¹ı(Radian) º¯È¯: 2 * PI * (ÇöÀç ÀÎµ¦½º / ÀüÃ¼ ºĞÇÒ ¼ö)
+            // í˜¸ë„ë²•(Radian) ë³€í™˜: 2 * PI * (í˜„ì¬ ì¸ë±ìŠ¤ / ì „ì²´ ë¶„í•  ìˆ˜)
             float x = Mathf.Cos(angle) * radius;
             float z = Mathf.Sin(angle) * radius;
 
@@ -46,7 +46,7 @@ public class AttackRangeDrawer : MonoBehaviour
         }
     }
 
-    // »ç°Å¸®°¡ º¯ÇÒ ¶§ ½Ç½Ã°£ ¾÷µ¥ÀÌÆ® (¿¹: Update ¶Ç´Â Æ¯Á¤ ÀÌº¥Æ®)
+    // ì‚¬ê±°ë¦¬ê°€ ë³€í•  ë•Œ ì‹¤ì‹œê°„ ì—…ë°ì´íŠ¸ (ì˜ˆ: Update ë˜ëŠ” íŠ¹ì • ì´ë²¤íŠ¸)
     public void UpdateRange(float newRange)
     {
         radius = newRange;
