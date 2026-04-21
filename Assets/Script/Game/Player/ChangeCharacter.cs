@@ -1,99 +1,94 @@
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 public class ChangeCharacter : MonoBehaviour
 {
 
-    [Header("Character")]
-    public GameObject Ada;
-    public GameObject TestPlayer;
+    [FormerlySerializedAs("Ada")] [Header("Character")]
+    public GameObject ada;
+    public GameObject testPlayer;
 
     [Header("ChangeButton")]
     public InputAction button1;
     public InputAction button2;
 
 
-    public CinemachineVirtualCameraBase vcam;
+    [FormerlySerializedAs("_vcam")] [SerializeField] private CinemachineCamera vcam;
 
-    public TestDrawGUI GUI;
-
-    void Start()
+    private void Start()
     {
-
-        if (!GUI) { Debug.Log("���ٴµ���?"); }
-
-        if (Ada.activeSelf)
+        if (ada.activeSelf)
         {
-            vcam.Follow = Ada.transform;
-            vcam.LookAt = Ada.transform;
+            vcam.Target.TrackingTarget = ada.transform;
+            vcam.Target.LookAtTarget = ada.transform;
         }
-        else if (TestPlayer.activeSelf)
+        else if (testPlayer.activeSelf)
         {
-            vcam.Follow = TestPlayer.transform;
-            vcam.LookAt = TestPlayer.transform;
+            vcam.Target.TrackingTarget = testPlayer.transform;
+            vcam.Target.LookAtTarget = testPlayer.transform;
         }
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
-        button1.performed += bt1;
-        button2.performed += bt2;
+        button1.performed += Bt1;
+        button2.performed += Bt2;
 
         button1.Enable();
         button2.Enable();
 
     }
 
-    public void OnDisable()
+    private void OnDisable()
     {
-        button1.performed -= bt1;
-        button2.performed -= bt2;
+        button1.performed -= Bt1;
+        button2.performed -= Bt2;
 
         button1.Disable();
         button2.Disable();
     }
 
 
-    void bt1(InputAction.CallbackContext context)
+    private void Bt1(InputAction.CallbackContext context)
     {
-
-        if (TestPlayer.activeSelf)
+        if (testPlayer.activeSelf)
         {
-            Debug.Log("�̹� �׽�Ʈ�÷��̾� ĳ���� �Դϴ�");
+            Debug.Log("이미 테스트플레이어 캐릭터 입니다");
         }
         else
         {
-            GUI.is_Ada = false;
-            Debug.Log("�׽�Ʈ �÷��̾� ��ü �Ϸ�");
+            EventBus<CharacterChangedEvent>.Raise(new CharacterChangedEvent(false));
+            Debug.Log("테스트 플레이어 교체 완료");
         }
 
-        Ada.SetActive(false);
-        TestPlayer.SetActive(true);
+        ada.SetActive(false);
+        testPlayer.SetActive(true);
 
-        vcam.Follow = TestPlayer.transform;
-        vcam.LookAt = TestPlayer.transform;
+        vcam.Target.TrackingTarget = testPlayer.transform;
+        vcam.Target.LookAtTarget = testPlayer.transform;
 
     }
 
 
-    void bt2(InputAction.CallbackContext context)
+    private void Bt2(InputAction.CallbackContext context)
     {
-        if (Ada.activeSelf)
+        if (ada.activeSelf)
         {
-            Debug.Log("�̹� ���̴� ĳ���� �Դϴ�");
+            Debug.Log("이미 아다인 캐릭터 입니다");
         }
         else
         {
-            GUI.is_Ada = true;
-            Debug.Log("���̴� ��ü �Ϸ�");
+            EventBus<CharacterChangedEvent>.Raise(new CharacterChangedEvent(true));
+            Debug.Log("아다인 교체 완료");
         }
 
-        Ada.SetActive(true);
-        TestPlayer.SetActive(false);
+        ada.SetActive(true);
+        testPlayer.SetActive(false);
 
-        vcam.Follow = Ada.transform;
-        vcam.LookAt = Ada.transform;
+        vcam.Target.TrackingTarget = ada.transform;
+        vcam.Target.LookAtTarget = ada.transform;
     }
 
 }

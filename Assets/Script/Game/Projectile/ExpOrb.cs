@@ -1,6 +1,4 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Playables;
 
 public class ExpOrb : MonoBehaviour
 {
@@ -8,15 +6,9 @@ public class ExpOrb : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("Player"))
-            return;
+        if (!other.transform.root.CompareTag("Player")) return;
 
-        PlayerStats playerExp = other.GetComponent<PlayerStats>();
-
-     if (playerExp != null)
-        {
-            playerExp.AddExp(expAmount);
-            Destroy(gameObject);
-        }
+        EventBus<ExpOrbPickedUpEvent>.Raise(new ExpOrbPickedUpEvent(expAmount));
+        Destroy(gameObject);
     }
 }

@@ -1,16 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// 각자의 지옥 - 탄막 패턴 방출기
-///
-/// 패턴 종류 (기획서 핵심 재미요소 1: "캐릭터의 아픔이 몬스터의 공격으로 형상화"):
-///   Circular : 방사형 탄막 (전방위 균등 발사)
-///   Spiral   : 나선형 탄막 (회전하며 발사)
-///   Aimed    : 조준형  탄막 (플레이어 방향 3-way)
-///
-/// 보스 패턴 확장을 위해 PatternType을 추가하기만 하면 됩니다.
-/// </summary>
+
 public class BulletPatternEmitter : MonoBehaviour
 {
     public enum PatternType { Circular, Spiral, Aimed }
@@ -21,30 +12,30 @@ public class BulletPatternEmitter : MonoBehaviour
     public float       bulletSpeed   = 5.5f;
     public float       fireInterval  = 1.4f;
 
-    private bool      isActive;
-    private Coroutine patternRoutine;
-    private Transform player;
-    private float     spiralAngle;
+    private bool      _isActive;
+    private Coroutine _patternRoutine;
+    private Transform _player;
+    private float     _spiralAngle;
 
     // ───────────────────────────────────────────────────────────
     void Start()
     {
         var go = GameObject.FindGameObjectWithTag("Player");
-        if (go != null) player = go.transform;
+        if (go != null) _player = go.transform;
     }
 
     public void StartPattern()
     {
-        if (isActive) return;
-        isActive       = true;
-        patternRoutine = StartCoroutine(PatternLoop());
+        if (_isActive) return;
+        _isActive       = true;
+        _patternRoutine = StartCoroutine(PatternLoop());
     }
 
     public void StopPattern()
     {
-        if (!isActive) return;
-        isActive = false;
-        if (patternRoutine != null) StopCoroutine(patternRoutine);
+        if (!_isActive) return;
+        _isActive = false;
+        if (_patternRoutine != null) StopCoroutine(_patternRoutine);
     }
 
     // ─── 패턴 루프 ─────────────────────────────────────────────
@@ -53,7 +44,7 @@ public class BulletPatternEmitter : MonoBehaviour
         // 첫 발사 전 짧은 대기 (공격 진입 직후 즉발 방지)
         yield return new WaitForSeconds(0.4f);
 
-        while (isActive)
+        while (_isActive)
         {
             switch (pattern)
             {
@@ -82,48 +73,42 @@ public class BulletPatternEmitter : MonoBehaviour
         int burst = 4;
         for (int i = 0; i < burst; i++)
         {
-            float angle = spiralAngle + (360f / burst) * i;
+            float angle = _spiralAngle + (360f / burst) * i;
             Vector3 dir = Quaternion.Euler(0, angle, 0) * Vector3.forward;
             SpawnBullet(dir);
         }
-        spiralAngle = (spiralAngle + 25f) % 360f;
+        _spiralAngle = (_spiralAngle + 25f) % 360f;
     }
 
     // ─── 조준형 탄막 (3-way) ───────────────────────────────────
     void FireAimed()
     {
-        if (player == null) return;
+        if (_player == null) return;
 
-        Vector3 baseDir = player.position - transform.position;
+        var baseDir = _player.position - transform.position;
         baseDir.y = 0f;
         if (baseDir.sqrMagnitude < 0.01f) return;
         baseDir.Normalize();
 
-        int   ways   = 3;
-        float spread = 18f;
-        for (int i = 0; i < ways; i++)
+        const int ways = 3;
+        const float spread = 18f;
+        for (var i = 0; i < ways; i++)
         {
-            float offset = (i - ways / 2) * spread;
-            Vector3 dir  = Quaternion.Euler(0, offset, 0) * baseDir;
+            var offset = (i - ways / 2) * spread;
+            var dir  = Quaternion.Euler(0, offset, 0) * baseDir;
             SpawnBullet(dir);
         }
     }
 
     // ─── 탄환 생성 ─────────────────────────────────────────────
-    void SpawnBullet(Vector3 direction)
+    private void SpawnBullet(Vector3 direction)
     {
-        //네브 메쉬로 인해 탄환 생성 좌표가 강제로 올라가진걸 해결하기 위한 임시조치
-        //origin.y = 0.5f;
+        // NavMesh로 인해 강제 보정된 Y 좌표를 고정
         Vector3 origin = transform.position + Vector3.up * 0.6f;
         origin.y = 0.5f;
 
-        //Auto Aim 판별을 위해 함수 매개변수 5개로 증가하면서 코드 변경
-        BulletHelper.Spawn(
-            origin,
-            direction,
-            bulletSpeed,
-            isPlayerBullet: false,
-            isAutoAimBullet: false
-);
+        EventBus<SpawnBulletRequestEvent>.Raise(
+            new SpawnBulletRequestEvent(origin, direction, bulletSpeed,
+                isPlayerBullet: false, isAutoAim: false));
     }
 }

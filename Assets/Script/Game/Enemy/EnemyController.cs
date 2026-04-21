@@ -1,28 +1,19 @@
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.AI;
 
-/// <summary>
-/// 각자의 지옥 - 기본 적 컨트롤러 (FSM 기반)
-///
-/// 상태 머신:
-///   Idle   → (플레이어 감지 범위 진입) → Chase
-///   Chase  → (공격 범위 진입)          → Attack
-///   Attack → (공격 범위 이탈)          → Chase
-///   Any    → (HP = 0)                  → Dead
-/// </summary>
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyController : MonoBehaviour
 {
     // ─── 전역 카운터 ───────────────────────────────────────────
-    public static int ActiveCount { get; private set; }
+    private static int ActiveCount { get; set; }
 
     // ─── FSM 상태 ───────────────────────────────────────────────
-    public enum State { Idle, Chase, Attack, Dead }
+    private enum State { Idle, Chase, Attack, Dead }
 
     [Header("Stats")]
     public float hp = 30f;
+    public float maxHp = 30f;
     public float moveSpeed = 3.5f;
     public int scoreValue = 100;
 
@@ -35,9 +26,6 @@ public class EnemyController : MonoBehaviour
 
     public MonsterDrop drop;
 
-    // ─── 이벤트 ────────────────────────────────────────────────
-    public event System.Action onDeath;
-
     // ─── 색상 상수 ─────────────────────────────────────────────
     static readonly Color ColorIdle = new Color(0.55f, 0.20f, 0.20f);
     static readonly Color ColorChase = new Color(0.85f, 0.30f, 0.10f);
@@ -45,68 +33,82 @@ public class EnemyController : MonoBehaviour
     static readonly Color ColorDead = new Color(0.30f, 0.30f, 0.30f);
 
     // ─── 내부 ──────────────────────────────────────────────────
-    private State state = State.Idle;
+    private State _state = State.Idle;
 
-    private Rigidbody rb;
-    private NavMeshAgent agent;
-    private BulletPatternEmitter emitter;
-    private Renderer rend;
-    private Transform player;
+    private Rigidbody _rb;
+    private NavMeshAgent _agent;
+    private BulletPatternEmitter _emitter;
+    private Renderer _rend;
+    private Transform _player;
 
     // ───────────────────────────────────────────────────────────
-    void Awake()
+    private void Awake()
     {
         ActiveCount++;
-        agent = GetComponent<NavMeshAgent>();
+        _agent = GetComponent<NavMeshAgent>();
+        EventBus<EnemyCountChangedEvent>.Raise(new EnemyCountChangedEvent(ActiveCount));
+        EventBus<EnemyRegisteredEvent>.Raise(new EnemyRegisteredEvent(gameObject));
     }
 
-    void OnDestroy()
+    private void OnEnable()  => EventBus<BulletHitEnemyEvent>.Subscribe(OnBulletHit);
+    public void OnDisable() => EventBus<BulletHitEnemyEvent>.Unsubscribe(OnBulletHit);
+
+    private void OnBulletHit(BulletHitEnemyEvent evt)
     {
-        if (state != State.Dead)
+        if (evt.Target != gameObject) return;
+        TakeDamage(evt.Damage);
+    }
+
+    private void OnDestroy()
+    {
+        if (_state != State.Dead)
+        {
             ActiveCount--;
+            EventBus<EnemyUnregisteredEvent>.Raise(new EnemyUnregisteredEvent(gameObject));
+            EventBus<EnemyCountChangedEvent>.Raise(new EnemyCountChangedEvent(ActiveCount));
+        }
     }
 
-    void Start()
+    private void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        emitter = GetComponent<BulletPatternEmitter>();
-        rend = GetComponentInChildren<Renderer>();
+        _rb = GetComponent<Rigidbody>();
+        _emitter = GetComponent<BulletPatternEmitter>();
+        _rend = GetComponentInChildren<Renderer>();
 
         drop = GetComponent<MonsterDrop>();
+        maxHp = hp;
 
         // Rigidbody 기본 설정
-        rb.useGravity = false;
-        rb.constraints = RigidbodyConstraints.FreezePositionY
-                       | RigidbodyConstraints.FreezeRotationX
-                       | RigidbodyConstraints.FreezeRotationZ;
-        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        _rb.useGravity = false;
+        _rb.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
+        _rb.interpolation = RigidbodyInterpolation.Interpolate;
 
         // NavMeshAgent 기본 설정
-        agent.speed = moveSpeed;
-        agent.angularSpeed = 360f;
-        agent.stoppingDistance = attackRange * 0.9f;
-        agent.acceleration = 20f;
-        agent.updateRotation = true;
-        agent.updateUpAxis = false;
+        _agent.speed = moveSpeed;
+        _agent.angularSpeed = 360f;
+        _agent.stoppingDistance = attackRange * 0.9f;
+        _agent.acceleration = 20f;
+        _agent.updateRotation = true;
+        _agent.updateUpAxis = false;
 
         // 플레이어 찾기
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        var playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
-            player = playerObj.transform;
+            _player = playerObj.transform;
 
         SetColor(ColorIdle);
     }
 
-    void Update()
+    private void Update()
     {
-        if (state == State.Dead || player == null)
+        if (_state == State.Dead || _player == null)
             return;
 
-        float dist = Vector3.Distance(transform.position, player.position);
+        var dist = Vector3.Distance(transform.position, _player.position);
 
-        UpdateFSM(dist);
+        UpdateFsm(dist);
 
-        switch (state)
+        switch (_state)
         {
             case State.Chase:
                 UpdateChase();
@@ -119,9 +121,9 @@ public class EnemyController : MonoBehaviour
     }
 
     // ─── FSM 전이 판단 ─────────────────────────────────────────
-    void UpdateFSM(float dist)
+    private void UpdateFsm(float dist)
     {
-        switch (state)
+        switch (_state)
         {
             case State.Idle:
                 if (dist < detectRange)
@@ -145,17 +147,17 @@ public class EnemyController : MonoBehaviour
     // ─── 상태 실행: Chase ──────────────────────────────────────
     void UpdateChase()
     {
-        if (!agent.isOnNavMesh || player == null)
+        if (!_agent.isOnNavMesh || _player == null)
             return;
 
-        agent.SetDestination(player.position);
+        _agent.SetDestination(_player.position);
     }
 
     // ─── 상태 실행: Attack ─────────────────────────────────────
     void UpdateAttack()
     {
         // 공격 중에는 이동 멈추고 플레이어 방향만 유지
-        Vector3 lookDir = player.position - transform.position;
+        Vector3 lookDir = _player.position - transform.position;
         lookDir.y = 0f;
 
         if (lookDir.sqrMagnitude > 0.01f)
@@ -165,31 +167,31 @@ public class EnemyController : MonoBehaviour
     // ─── 상태 전이 ─────────────────────────────────────────────
     void TransitionTo(State next)
     {
-        if (state == next)
+        if (_state == next)
             return;
 
-        state = next;
+        _state = next;
 
         switch (next)
         {
             case State.Idle:
-                if (agent.isOnNavMesh)
-                    agent.ResetPath();
+                if (_agent.isOnNavMesh)
+                    _agent.ResetPath();
 
-                emitter?.StopPattern();
+                _emitter?.StopPattern();
                 SetColor(ColorIdle);
                 break;
 
             case State.Chase:
-                emitter?.StopPattern();
+                _emitter?.StopPattern();
                 SetColor(ColorChase);
                 break;
 
             case State.Attack:
-                if (agent.isOnNavMesh)
-                    agent.ResetPath();
+                if (_agent.isOnNavMesh)
+                    _agent.ResetPath();
 
-                emitter?.StartPattern();
+                _emitter?.StartPattern();
                 SetColor(ColorAttack);
                 break;
         }
@@ -198,10 +200,11 @@ public class EnemyController : MonoBehaviour
     // ─── 피해 / 사망 ───────────────────────────────────────────
     public void TakeDamage(float amount)
     {
-        if (state == State.Dead)
+        if (_state == State.Dead)
             return;
 
         hp -= amount;
+        EventBus<EnemyHpChangedEvent>.Raise(new EnemyHpChangedEvent(gameObject, Mathf.Clamp01(hp / maxHp)));
 
         if (hp <= 0f)
             Dead();
@@ -209,43 +212,38 @@ public class EnemyController : MonoBehaviour
 
     void Dead()
     {
-        state = State.Dead;
+        _state = State.Dead;
         ActiveCount--;
 
         if (drop != null)
-        {
             drop.DropItems();
-        }
 
-        if (agent != null && agent.isOnNavMesh)
-            agent.ResetPath();
+        if (_agent != null && _agent.isOnNavMesh)
+            _agent.ResetPath();
 
-        emitter?.StopPattern();
+        _emitter?.StopPattern();
         SetColor(ColorDead);
-        onDeath?.Invoke();
 
-        GameManager.Instance?.AddScore(scoreValue);
+        EventBus<EnemyUnregisteredEvent>.Raise(new EnemyUnregisteredEvent(gameObject));
+        EventBus<EnemyCountChangedEvent>.Raise(new EnemyCountChangedEvent(ActiveCount));
+        EventBus<EnemyDiedEvent>.Raise(new EnemyDiedEvent(scoreValue));
 
         Destroy(gameObject, 0.2f);
-
     }
 
     void SetColor(Color c)
     {
-        if (rend != null)
-            rend.material.color = c;
+        if (_rend != null)
+            _rend.material.color = c;
     }
 
     // ─── 충돌 판정 ( 플레이어 -> 몬스터 ) ────────────────────────────────────
-
     void OnTriggerStay(Collider other)
     {
         if (Time.time - lastHitTime < 1f) return;
+        if (!other.transform.root.CompareTag("Player")) return;
 
-        var stats = other.GetComponentInParent<PlayerStats>();
-        if (stats == null) return;
-
-        stats.TakeDamage(damage);
+        EventBus<EnemyContactDamageEvent>.Raise(new EnemyContactDamageEvent(damage));
         lastHitTime = Time.time;
     }
 

@@ -1,8 +1,7 @@
-using Unity.VisualScripting;
-using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class test_AutoAim : MonoBehaviour
+public class TestAutoAim : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform firePoint;
@@ -12,35 +11,35 @@ public class test_AutoAim : MonoBehaviour
     [SerializeField] private float attackRange = 10f;
     [SerializeField] private float bulletSpeed = 12f;
 
-    [SerializeField] private Player_LaserAttack Skill;
+    [FormerlySerializedAs("Skill")] [SerializeField] private PlayerLaserAttack skill;
 
 
-    public PlayerStats Stats;
-    private PlayerDeath death;
-    private float nextFireTime;
+    [FormerlySerializedAs("Stats")] public PlayerStats stats;
+    private PlayerDeath _death;
+    private float _nextFireTime;
 
 
     private void Start()
     {
-        Stats = GetComponentInParent<PlayerStats>();
-        Skill = GetComponentInParent<Player_LaserAttack>();
-        death = GetComponent<PlayerDeath>();
+        stats = GetComponentInParent<PlayerStats>();
+        skill = GetComponentInParent<PlayerLaserAttack>();
+        _death = GetComponent<PlayerDeath>();
     }
 
-    void Update()
+    private void Update()
     {
 
-        if (death != null && death.isDead)
+        if (_death && _death.isDead)
             return;
 
 
-        if (Time.time < nextFireTime)
+        if (Time.time < _nextFireTime)
             return;
 
-        if (Skill != null && Skill.IsUsingSkill)
+        if (skill && skill.IsUsingSkill)
             return;
 
-        if (Stats.currentHP <= 0)
+        if (stats.currentHp <= 0)
         {
             enabled = false;
             return;
@@ -56,7 +55,7 @@ public class test_AutoAim : MonoBehaviour
             return;
 
         Fire(target);
-        nextFireTime = Time.time + fireInterval;
+        _nextFireTime = Time.time + fireInterval;
     }
 
     Transform FindClosestEnemy()
@@ -88,12 +87,8 @@ public class test_AutoAim : MonoBehaviour
         Transform shootOrigin = firePoint != null ? firePoint : transform;
         Vector3 direction = (target.position - shootOrigin.position).normalized;
 
-        BulletHelper.Spawn(
-            shootOrigin.position,
-            direction,
-            bulletSpeed,
-            true,
-            true
-        );
+        EventBus<SpawnBulletRequestEvent>.Raise(
+            new SpawnBulletRequestEvent(shootOrigin.position, direction, bulletSpeed,
+                isPlayerBullet: true, isAutoAim: true));
     }
 }

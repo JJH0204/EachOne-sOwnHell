@@ -4,6 +4,16 @@ public class LevelUpUI : MonoBehaviour
 {
     public bool showLevelUpUI = false;
 
+    void OnEnable()  => EventBus<LevelUpEvent>.Subscribe(OnLevelUp);
+    void OnDisable() => EventBus<LevelUpEvent>.Unsubscribe(OnLevelUp);
+
+    void OnLevelUp(LevelUpEvent _)
+    {
+        if (showLevelUpUI) return;
+        showLevelUpUI = true;
+        Time.timeScale = 0f;
+    }
+
     private void OnGUI()
     {
         if (!showLevelUpUI)
@@ -21,9 +31,9 @@ public class LevelUpUI : MonoBehaviour
         float startX = (Screen.width - totalWidth) * 0.5f;
         float y = (Screen.height - cardHeight) * 0.5f;
 
-        DrawCard(startX, y, cardWidth, cardHeight, "°ø°Ý·Â Áõ°¡", "°ø°Ý·Â +10%");
-        DrawCard(startX + cardWidth + gap, y, cardWidth, cardHeight, "Ã¼·Â Áõ°¡", "ÃÖ´ë Ã¼·Â +20");
-        DrawCard(startX + (cardWidth + gap) * 2, y, cardWidth, cardHeight, "ÀÌµ¿¼Óµµ Áõ°¡", "ÀÌµ¿¼Óµµ +10%");
+        DrawCard(startX, y, cardWidth, cardHeight, "ï¿½ï¿½ï¿½Ý·ï¿½ ï¿½ï¿½ï¿½ï¿½", "ï¿½ï¿½ï¿½Ý·ï¿½ +10%");
+        DrawCard(startX + cardWidth + gap, y, cardWidth, cardHeight, "Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½", "ï¿½Ö´ï¿½ Ã¼ï¿½ï¿½ +20");
+        DrawCard(startX + (cardWidth + gap) * 2, y, cardWidth, cardHeight, "ï¿½Ìµï¿½ï¿½Óµï¿½ ï¿½ï¿½ï¿½ï¿½", "ï¿½Ìµï¿½ï¿½Óµï¿½ +10%");
     }
 
     void DrawCard(float x, float y, float w, float h, string title, string desc)
@@ -43,9 +53,9 @@ public class LevelUpUI : MonoBehaviour
         GUI.Label(new Rect(x + 10, y + 20, w - 20, 30), title, titleStyle);
         GUI.Label(new Rect(x + 10, y + 70, w - 20, 120), desc, descStyle);
 
-        if (GUI.Button(new Rect(x + 40, y + h - 50, w - 80, 30), "¼±ÅÃ"))
+        if (GUI.Button(new Rect(x + 40, y + h - 50, w - 80, 30), "ï¿½ï¿½ï¿½ï¿½"))
         {
-            Debug.Log($"{title} ¼±ÅÃ");
+            Debug.Log($"{title} ï¿½ï¿½ï¿½ï¿½");
             showLevelUpUI = false;
             Time.timeScale = 1f;
         }

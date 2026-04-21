@@ -1,22 +1,15 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Playables;
+using UnityEngine.Serialization;
 
 public class ItemOrb : MonoBehaviour
 {
-    [SerializeField] private int Item = 1;
+    [FormerlySerializedAs("Item")] [SerializeField] private int item = 1;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("Player"))
-            return;
+        if (!other.transform.root.CompareTag("Player")) return;
 
-        PlayerStats playerExp = other.GetComponent<PlayerStats>();
-
-     if (playerExp != null)
-        {
-            playerExp.AddItem(Item);
-            Destroy(gameObject);
-        }
+        EventBus<ItemOrbPickedUpEvent>.Raise(new ItemOrbPickedUpEvent(item));
+        Destroy(gameObject);
     }
 }

@@ -1,28 +1,27 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 using UnityEngine.InputSystem;
-using Unity.VisualScripting;
+using UnityEngine.Serialization;
 
-public class Test_EnterTheArena : MonoBehaviour
+public class TestEnterTheArena : MonoBehaviour
 {
 
-    [SerializeField] InputAction Enter;
-
+    [FormerlySerializedAs("Enter")] [SerializeField] private InputAction _enter;
+    
     private void OnEnable()
     {
-        Enter.performed += EnterKey;
-
-        Enter.Enable();
+        _enter.performed += EnterKey;
+    
+        _enter.Enable();
     }
 
     private void OnDisable()
     {
-        Enter.performed -= EnterKey;
-        Enter.Disable();
+        _enter.performed -= EnterKey;
+        _enter.Disable();
     }
 
-    void EnterKey(InputAction.CallbackContext context)
+    private void EnterKey(InputAction.CallbackContext context)
     {
         SceneManager.LoadScene("Arena");
     }
@@ -30,7 +29,6 @@ public class Test_EnterTheArena : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
-        Debug.Log("ÇÃ·¹ÀÌ¾î °¨ÁöµÊ");
+            Debug.Log("ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
     }
-
 }

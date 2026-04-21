@@ -1,0 +1,19 @@
+{
+    "name": "Game.Test",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0f2d4c073ffb84b83b3043d999e3e628",
+        "GUID:40c7b7e38592949b19c2e369fd160fde",
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:881fdeda365eb43c6b3eac189c9e990a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

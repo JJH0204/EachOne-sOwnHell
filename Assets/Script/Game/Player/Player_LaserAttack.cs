@@ -1,37 +1,32 @@
 using System.Collections;
-using System.Net;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 /// <summary>
-/// ������ ���� - �÷��̾� ��Ʈ�ѷ� (Grey Box)
+/// 각자의 지옥 - 플레이어 레이저 스킬
 ///
-/// ����:
-///   �̵�  : WASD (ī�޶� ���� ��� ����)
-///   ���  : ���콺 ���� ��ư (���콺 ��ġ ����)
-///   ȸ��  : Space (���, TODO)
+/// 스킬1 (Pierce Laser) : 관통 레이저 — 범위 내 모든 적에게 즉발 피해
+/// 스킬2 (Channeling Laser) : 채널링 레이저 — 가장 가까운 적에게 지속 피해
 ///
-/// ���� ���¿����� �̵��ӵ����߻�ӵ� 1.5�� ���.
+/// 이벤트 버스:
+///   구독 GameOverEvent         - 게임 오버 시 스킬 입력 차단
+///   발행 BulletHitEnemyEvent   - 레이저 명중 시 적에게 피해 전달
 /// </summary>
 [RequireComponent(typeof(Rigidbody), typeof(PlayerStats))]
-public class Player_LaserAttack : MonoBehaviour
+public class PlayerLaserAttack : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform firePoint;
-    [SerializeField] bool isUsingSkill = false;
+    [SerializeField] private bool isUsingSkill = false;
 
-    [Header("Shooting")]
-    public float fireRate = 0.15f;   // �ʴ� �߻� ����
-    public float bulletSpeed = 20f;
-
-    [Header("inputAction")]
-    public InputAction Skill1Action;
-    public InputAction Skill2Action;
+    [FormerlySerializedAs("Skill1Action")] [Header("inputAction")]
+    public InputAction skill1Action;
+    [FormerlySerializedAs("Skill2Action")] public InputAction skill2Action;
 
     [Header("Skill1 - Pierce Laser")]
-    [SerializeField] private float skill1Damage = 30f;
-    [SerializeField] private float skill1Range = 20f;
+    [SerializeField] private float skill1Damage   = 30f;
+    [SerializeField] private float skill1Range    = 20f;
     [SerializeField] private float skill1Cooldown = 3f;
 
     [Header("Skill1 Visual")]
@@ -40,296 +35,183 @@ public class Player_LaserAttack : MonoBehaviour
 
     [Header("Skill2 - Channeling Laser")]
     [SerializeField] private float skill2DamagePerSecond = 200f;
-    [SerializeField] private float skill2Range = 15f;
+    [SerializeField] private float skill2Range           = 15f;
 
     [Header("Skill2 Visual")]
     [SerializeField] private LineRenderer skill2Line;
     [SerializeField] private float skill2LineDuration = 0.15f;
 
-
-
-
-
     [SerializeField] private Camera mainCamera;
 
-    private Vector2 MoveInput;
-    private bool isChannelingLaser = false;
-    private float nextSkill1Time = 0f;
-    /*   private float nextSkill2Time = 0f;*/
-    private EnemyController EnemyHP;
-    private float EnemyHealth;
+    // ─── 내부 상태 ────────────────────────────────────────────────
+    private bool        _isGameOver;
+    private bool        _isChannelingLaser;
+    private float       _nextSkill1Time;
+    private PlayerStats _stats;
 
-    // ������ ���� ���� ������������������������������������������������������������������������������������������
-    private Rigidbody rb;
-    private Camera mainCam;
-    private PlayerStats stats;
-    private float nextFireTime;
+    public bool IsUsingSkill => isUsingSkill;
+    public float Skill1RemainCooldown => Mathf.Max(0f, _nextSkill1Time - Time.time);
 
-    // ����������������������������������������������������������������������������������������������������������������������
-    public bool IsUsingSkill
+    private void RaiseSkillStateChanged() =>
+        EventBus<PlayerSkillStateChangedEvent>.Raise(
+            new PlayerSkillStateChangedEvent(_nextSkill1Time, skill1Cooldown, isUsingSkill));
+
+    // ─────────────────────────────────────────────────────────────
+    private void Start()
     {
-        get { return isUsingSkill; }
+        _stats = GetComponent<PlayerStats>();
+        if (mainCamera == null) mainCamera = Camera.main;
+        RaiseSkillStateChanged();
     }
 
-    void Start()
+    private void OnEnable()
     {
-        rb = GetComponent<Rigidbody>();
-        mainCam = Camera.main;
-        stats = GetComponent<PlayerStats>();
-        EnemyHP = GetComponent<EnemyController>();
-
-        rb.useGravity = false;
-        rb.interpolation = RigidbodyInterpolation.Interpolate;
-        rb.constraints = RigidbodyConstraints.FreezePositionY
-                       | RigidbodyConstraints.FreezeRotationX
-                       | RigidbodyConstraints.FreezeRotationZ;
-
+        skill1Action.performed += OnSkill1;
+        skill2Action.performed += OnSkill2Started;
+        skill2Action.canceled  += OnSkill2Cancelled;
+        skill1Action.Enable();
+        skill2Action.Enable();
+    
+        EventBus<GameOverEvent>.Subscribe(OnGameOver);
+    }
+    
+    private void OnDisable()
+    {
+        skill1Action.performed -= OnSkill1;
+        skill2Action.performed -= OnSkill2Started;
+        skill2Action.canceled  -= OnSkill2Cancelled;
+        skill1Action.Disable();
+        skill2Action.Disable();
+    
+        EventBus<GameOverEvent>.Unsubscribe(OnGameOver);
     }
 
-    void Update()
+    private void OnGameOver(GameOverEvent _) => _isGameOver = true;
+
+    // ─── 업데이트 ─────────────────────────────────────────────────
+    private void Update()
     {
-        if (GameManager.Instance != null && GameManager.Instance.IsGameOver) return;
-        if (stats.IsIncapacitated) return;
+        if (_isGameOver) return;
+        if (_stats.IsIncapacitated) return;
 
-        /*        HandleShooting();*/
+        // AimToMouse();
 
-        AimToMouse();
-
-        if (isChannelingLaser)
-        {
+        if (_isChannelingLaser)
             FireChannelingLaser();
-        }
-
     }
 
-    void FixedUpdate()
-    {
-        if (GameManager.Instance != null && GameManager.Instance.IsGameOver) return;
-        if (stats.IsIncapacitated) return;
+    // ─── 입력 핸들러 ──────────────────────────────────────────────
+    private void OnSkill1(InputAction.CallbackContext ctx) => StartCoroutine(UseSkill1());
 
-    }
-
-    public float Skill1RemainCooldown
-    {
-        get { return Mathf.Max(0f, nextSkill1Time - Time.time); }
-    }
-
-
-
-    // ������ ��ų Ű �Է� ����������������������������������������������������������������������������������������������������
-
-    void OnEnable()
-    {
-        Skill1Action.performed += OnSkill1;
-        Skill2Action.performed += OnSkill2Started;
-        Skill2Action.canceled += OnSkill2Canceld;
-
-        Skill1Action.Enable();
-        Skill2Action.Enable();
-    }
-
-    void OnDisable()
-    {
-        Skill1Action.performed -= OnSkill1;
-        Skill2Action.performed -= OnSkill2Started;
-        Skill2Action.canceled -= OnSkill2Canceld;
-
-        Skill1Action.Disable();
-        Skill2Action.Disable();
-    }
-
-    void OnSkill1(InputAction.CallbackContext context)
-    {
-        StartCoroutine(UseSkill1());
-    }
-
-    void OnSkill2Started(InputAction.CallbackContext context)
+    private void OnSkill2Started(InputAction.CallbackContext ctx)
     {
         if (isUsingSkill) return;
-
-        isChannelingLaser = true;
-        isUsingSkill = true;
+        _isChannelingLaser = true;
+        isUsingSkill       = true;
+        RaiseSkillStateChanged();
     }
 
-    void OnSkill2Canceld(InputAction.CallbackContext context)
+    private void OnSkill2Cancelled(InputAction.CallbackContext ctx)
     {
-        isChannelingLaser = false;
-        isUsingSkill = false;
+        _isChannelingLaser = false;
+        isUsingSkill       = false;
         HideSkill2Laser();
+        RaiseSkillStateChanged();
     }
 
-
-    // ������ ��ų ����������������������������������������������������������������������������������������������������
-
-    void TryFirePierceLaser()
+    // ─── 스킬1 : 관통 레이저 ─────────────────────────────────────
+    private void TryFirePierceLaser()
     {
-        if (Time.time < nextSkill1Time)
-            return;
+        if (Time.time < _nextSkill1Time) return;
+        _nextSkill1Time = Time.time + skill1Cooldown;
 
-        nextSkill1Time = Time.time + skill1Cooldown;
-
-        Vector3 origin = firePoint.position;
-        Vector3 direction = firePoint.forward;
-        Vector3 endPoint = origin + direction * skill1Range;
+        var origin    = firePoint.position;
+        var direction = firePoint.forward;
+        var endPoint  = origin + direction * skill1Range;
 
         RaycastHit[] hits = Physics.RaycastAll(origin, direction, skill1Range);
-
-        Debug.DrawRay(origin, direction * skill1Range, Color.red, 5f);
-
         foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.CompareTag("Enemy"))
-            {
-                EnemyController enemy = hit.collider.GetComponent<EnemyController>();
-                if (enemy != null)
-                {
-                    enemy.TakeDamage(skill1Damage);
-                }
-            }
+            var root = hit.collider.transform.root;
+            if (!root.CompareTag("Enemy")) continue;
+            EventBus<BulletHitEnemyEvent>.Raise(new BulletHitEnemyEvent(root.gameObject, skill1Damage));
         }
 
         ShowSkill1Laser(origin, endPoint);
+    }
 
-        Debug.Log("��ų1 ���� ������ �߻�");
+    IEnumerator UseSkill1()
+    {
+        isUsingSkill = true;
+        TryFirePierceLaser();
+        RaiseSkillStateChanged();
+        yield return new WaitForSeconds(skill1Cooldown);
+        isUsingSkill = false;
+        RaiseSkillStateChanged();
     }
 
     void ShowSkill1Laser(Vector3 start, Vector3 end)
     {
-        if (skill1Line == null)
-            return;
-
+        if (skill1Line == null) return;
         skill1Line.SetPosition(0, start);
         skill1Line.SetPosition(1, end);
         skill1Line.enabled = true;
-
         CancelInvoke(nameof(HideSkill1Laser));
         Invoke(nameof(HideSkill1Laser), skill1LineDuration);
     }
 
     void HideSkill1Laser()
     {
-        if (skill1Line == null)
-            return;
-
-        skill1Line.enabled = false;
+        if (skill1Line != null) skill1Line.enabled = false;
     }
 
-
-    void AimToMouse()
-    {
-        if (mainCamera == null)
-            mainCamera = Camera.main;
-
-        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-
-        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-
-        if (groundPlane.Raycast(ray, out float distance))
-        {
-            Vector3 mouseWorldPos = ray.GetPoint(distance);
-            Vector3 direction = mouseWorldPos - transform.position;
-            direction.y = 0f;
-
-            if (direction.sqrMagnitude > 0.001f)
-            {
-                transform.forward = direction.normalized;
-            }
-        }
-    }
-
-
+    // ─── 스킬2 : 채널링 레이저 ───────────────────────────────────
     void FireChannelingLaser()
     {
-        Vector3 origin = firePoint.position;
+        Vector3 origin    = firePoint.position;
         Vector3 direction = firePoint.forward;
-        Vector3 endPoint = origin + direction * skill2Range;
-
-
-        Debug.DrawRay(origin, direction * skill2Range, Color.blue);
+        Vector3 endPoint  = origin + direction * skill2Range;
 
         if (Physics.Raycast(origin, direction, out RaycastHit hit, skill2Range))
         {
-            if (hit.collider.CompareTag("Enemy"))
+            var root = hit.collider.transform.root;
+            if (root.CompareTag("Enemy"))
             {
-                EnemyController enemy = hit.collider.GetComponent<EnemyController>();
-                if (enemy != null)
-                {
-                    float damage = skill2DamagePerSecond * Time.deltaTime;
-                    enemy.TakeDamage(damage);
-                }
+                float damage = skill2DamagePerSecond * Time.deltaTime;
+                EventBus<BulletHitEnemyEvent>.Raise(new BulletHitEnemyEvent(root.gameObject, damage));
             }
         }
 
         ShowSkill2Laser(origin, endPoint);
     }
 
-
-    void HideSkill2Laser()
-    {
-        if (skill2Line == null)
-            return;
-
-        skill2Line.enabled = false;
-    }
-
-
     void ShowSkill2Laser(Vector3 start, Vector3 end)
     {
-        if (skill2Line == null)
-            return;
-
+        if (skill2Line == null) return;
         skill2Line.SetPosition(0, start);
         skill2Line.SetPosition(1, end);
         skill2Line.enabled = true;
-
         CancelInvoke(nameof(HideSkill2Laser));
         Invoke(nameof(HideSkill2Laser), skill2LineDuration);
     }
 
-    IEnumerator UseSkill1()
+    void HideSkill2Laser()
     {
-        isUsingSkill = true;
-
-        TryFirePierceLaser();
-
-        yield return new WaitForSeconds(3.0f);
-
-        isUsingSkill = false;
+        if (skill2Line != null) skill2Line.enabled = false;
     }
 
+    // ─── 마우스 조준 ──────────────────────────────────────────────
+    // void AimToMouse()
+    // {
+    //     Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+    //     var groundPlane = new Plane(Vector3.up, Vector3.zero);
+    //
+    //     if (groundPlane.Raycast(ray, out float distance))
+    //     {
+    //         Vector3 dir = ray.GetPoint(distance) - transform.position;
+    //         dir.y = 0f;
+    //         if (dir.sqrMagnitude > 0.001f)
+    //             transform.forward = dir.normalized;
+    //     }
+    // }
 }
-
-
-
-
-// ������ ��� ����������������������������������������������������������������������������������������������������
-
-/*void HandleShooting()
-    {
-        var mouse = Mouse.current;
-        if (mouse == null) return;
-        if (!mouse.leftButton.isPressed) return;
-
-        float rate = stats.IsAwakened ? fireRate * 0.5f : fireRate;
-        if (Time.time < nextFireTime) return;
-        nextFireTime = Time.time + rate;
-
-        // ���콺 ��ġ �� ���� ������
-        Ray ray = mainCam.ScreenPointToRay(mouse.position.ReadValue());
-        var plane = new Plane(Vector3.up, transform.position);
-        if (!plane.Raycast(ray, out float dist)) return;
-
-        Vector3 target = ray.GetPoint(dist);
-        Vector3 dir    = target - transform.position;
-        dir.y = 0f;
-        if (dir.sqrMagnitude < 0.01f) return;
-
-        BulletHelper.Spawn(
-            transform.position + dir.normalized * 0.7f + Vector3.up * 0.5f,
-            dir.normalized,
-            bulletSpeed,
-            isPlayerBullet: true
-        );
-    }
-}
-*/

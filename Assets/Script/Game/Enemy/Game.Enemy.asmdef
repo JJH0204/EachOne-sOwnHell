@@ -1,0 +1,16 @@
+{
+    "name": "Game.Enemy",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0f2d4c073ffb84b83b3043d999e3e628"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

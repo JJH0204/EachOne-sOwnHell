@@ -10,32 +10,32 @@ public class PlayerDeath : MonoBehaviour
         A, B
     }
 
-    [Header("³­ÀÌµµ")]
+    [Header("ï¿½ï¿½ï¿½Ìµï¿½")]
     public Difficulty difficulty = Difficulty.A;
 
-    [Header("Á×À½ »óÅÂ")]
-    public bool isDead = false;
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
+    public bool isDead;
 
-    [Header("»ç¸Á½Ã Å° ÀÔ·Â")]
-    public InputAction retryKey;
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½ Å° ï¿½Ô·ï¿½")]
+    public InputAction RetryKey;
     public InputAction EndGameKey;
 
-    [Header("¸·À» ½ºÅ©¸³Æ®")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®")]
     public PlayerController moveScript;
-    public test_AutoAim autoAttackScript;
+    public TestAutoAim autoAttackScript;
 
-    [Header("B ³­ÀÌµµ Å¸ÀÌ¸Ó")]
+    [Header("B ï¿½ï¿½ï¿½Ìµï¿½ Å¸ï¿½Ì¸ï¿½")]
     [SerializeField] private float bEndingUnlockTime = 60f;
-    [SerializeField] private Coroutine bTimerCoroutine;
+    private Coroutine _bTimerCoroutine;
 
-    private PlayerStats playerStats;
+    private PlayerStats _playerStats;
 
-    private bool bTimerStarted = false;
-    private bool bEndingUnlocked = false;
+    private bool _bTimerStarted;
+    private bool _bEndingUnlocked;
 
     private void Awake()
     {
-        playerStats = GetComponent<PlayerStats>();
+        _playerStats = GetComponent<PlayerStats>();
     }
 
     private void Start()
@@ -49,10 +49,10 @@ public class PlayerDeath : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(bEndingUnlocked);
+        Debug.Log(_bEndingUnlocked);
     }
 
-    IEnumerator StartBTimer()
+    private IEnumerator StartBTimer()
     {
         yield return new WaitForSeconds(bEndingUnlockTime);
 
@@ -61,8 +61,8 @@ public class PlayerDeath : MonoBehaviour
             yield break;
         }
 
-        bEndingUnlocked = true;
-        bTimerCoroutine = null;
+        _bEndingUnlocked = true;
+        _bTimerCoroutine = null;
     }
 
     public void HandleDeath()
@@ -71,36 +71,33 @@ public class PlayerDeath : MonoBehaviour
 
         isDead = true;
 
-        if (moveScript != null)
+        if (moveScript)
             moveScript.enabled = false;
 
-        if (autoAttackScript != null)
+        if (autoAttackScript)
             autoAttackScript.enabled = false;
 
-        if (bTimerCoroutine != null)
+        if (_bTimerCoroutine != null)
         {
-            StopCoroutine(bTimerCoroutine);
-            bTimerCoroutine = null;
+            StopCoroutine(_bTimerCoroutine);
+            _bTimerCoroutine = null;
         }
 
-        bTimerStarted = false;
+        _bTimerStarted = false;
 
-        // A ³­ÀÌµµ¸é Á×ÀÚ¸¶ÀÚ ¹Ù·Î ¿£µù
-        if (difficulty == Difficulty.A)
-        {
-            SceneManager.LoadScene("Test_EndingA");
-            return;
-        }
+        // A ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½
+        if (difficulty != Difficulty.A) return;
+        SceneManager.LoadScene("Test_EndingA");
 
-        // B ³­ÀÌµµ´Â UI ¶ç¿ì°í ¼±ÅÃÁö Á¦°ø
+        // B ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 
-    void ContinueB()
+    private void ContinueB()
     {
         isDead = false;
 
-        if (playerStats != null)
-            playerStats.ReviveForMockup(100);
+        if (_playerStats != null)
+            _playerStats.ReviveForMockup(100);
 
         if (moveScript != null)
             moveScript.enabled = true;
@@ -108,7 +105,7 @@ public class PlayerDeath : MonoBehaviour
         if (autoAttackScript != null)
             autoAttackScript.enabled = true;
 
-        if (difficulty == Difficulty.B && !bEndingUnlocked)
+        if (difficulty == Difficulty.B && !_bEndingUnlocked)
         {
             StartBTimerRoutine();
         }
@@ -116,58 +113,58 @@ public class PlayerDeath : MonoBehaviour
 
     private void OnEnable()
     {
-        retryKey.performed += retryBtn;
+        RetryKey.performed += RetryBtn;
         EndGameKey.performed += EndBtn;
-
-        retryKey.Enable();
+    
+        RetryKey.Enable();
         EndGameKey.Enable();
     }
-
+    
     private void OnDisable()
     {
-        retryKey.performed -= retryBtn;
+        RetryKey.performed -= RetryBtn;
         EndGameKey.performed -= EndBtn;
-
-        retryKey.Disable();
+    
+        RetryKey.Disable();
         EndGameKey.Disable();
     }
 
-    void retryBtn(InputAction.CallbackContext context)
+    private void RetryBtn(InputAction.CallbackContext context)
     {
         if (!isDead) return;
-
+    
         if (difficulty == Difficulty.B)
         {
             ContinueB();
         }
     }
 
-    void EndBtn(InputAction.CallbackContext context)
+    private void EndBtn(InputAction.CallbackContext context)
     {
         if (!isDead) return;
-
+    
         if (difficulty != Difficulty.B) return;
-        if (!bEndingUnlocked) return;
-
+        if (!_bEndingUnlocked) return;
+    
         SceneManager.LoadScene("Test_EndingB");
     }
 
-    void StartBTimerRoutine()
+    private void StartBTimerRoutine()
     {
-        // È¤½Ã ÀÌ¹Ì µ¹°í ÀÖÀ¸¸é ¸ÕÀú ²÷±â
-        if (bTimerCoroutine != null)
+        // È¤ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        if (_bTimerCoroutine != null)
         {
-            StopCoroutine(bTimerCoroutine);
+            StopCoroutine(_bTimerCoroutine);
         }
 
-        // »óÅÂ ÃÊ±âÈ­
-        bTimerStarted = true;
-        bEndingUnlocked = false;
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
+        _bTimerStarted = true;
+        _bEndingUnlocked = false;
 
-        bTimerCoroutine = StartCoroutine(StartBTimer());
+        _bTimerCoroutine = StartCoroutine(StartBTimer());
     }
 
-    // ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ ¿£µù GUI ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ
+    // ï¿½Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤ï¿½ ï¿½ï¿½ï¿½ï¿½ GUI ï¿½Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤ï¿½
 
     private void OnGUI()
     {
@@ -178,27 +175,37 @@ public class PlayerDeath : MonoBehaviour
         GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), Texture2D.whiteTexture);
         GUI.color = Color.white;
 
-        GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-        titleStyle.fontSize = 40;
-        titleStyle.alignment = TextAnchor.MiddleCenter;
-        titleStyle.fontStyle = FontStyle.Bold;
-        titleStyle.normal.textColor = Color.red;
+        var titleStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 40,
+            alignment = TextAnchor.MiddleCenter,
+            fontStyle = FontStyle.Bold,
+            normal =
+            {
+                textColor = Color.red
+            }
+        };
 
-        GUIStyle textStyle = new GUIStyle(GUI.skin.label);
-        textStyle.fontSize = 20;
-        textStyle.alignment = TextAnchor.MiddleCenter;
-        textStyle.normal.textColor = Color.white;
+        var textStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 20,
+            alignment = TextAnchor.MiddleCenter,
+            normal =
+            {
+                textColor = Color.white
+            }
+        };
 
         GUI.Label(new Rect(0, 120, Screen.width, 50), "GAME OVER", titleStyle);
 
-        string optionText = "R : ºÎÈ°";
+        var optionText = "R : ï¿½ï¿½È°";
 
-        if (difficulty == Difficulty.B && bEndingUnlocked)
+        if (difficulty == Difficulty.B && _bEndingUnlocked)
         {
-            optionText = "R : ºÎÈ° / F : ¿£µù";
+            optionText = "R : ï¿½ï¿½È° / F : ï¿½ï¿½ï¿½ï¿½";
         }
 
-        GUI.Label(new Rect(0, 220, Screen.width, 40), "³­ÀÌµµ : " + difficulty, textStyle);
+        GUI.Label(new Rect(0, 220, Screen.width, 40), "ï¿½ï¿½ï¿½Ìµï¿½ : " + difficulty, textStyle);
         GUI.Label(new Rect(0, 260, Screen.width, 40), optionText, textStyle);
     }
 }

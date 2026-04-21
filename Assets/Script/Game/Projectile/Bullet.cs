@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -12,38 +11,31 @@ public class Bullet : MonoBehaviour
     [HideInInspector] public float lifetime      = 5f;
     [HideInInspector] public bool  isPlayerBullet;
 
-    private Vector3 direction;
-    private float   speed;
-    private float   spawnTime;
-    private bool    isDead;
-    private Rigidbody Rb;
+    private Vector3 _direction;
+    private float   _speed;
+    private float   _spawnTime;
+    private bool    _isDead;
+    private Rigidbody _rb;
 
     // ───────────────────────────────────────────────────────────
     public void Initialize(Vector3 dir, float spd, bool playerBullet)
     {
-        direction      = dir;
-        speed          = spd;
+        _direction      = dir;
+        _speed          = spd;
         isPlayerBullet = playerBullet;
-        spawnTime      = Time.time;
-        isDead         = false;
+        _spawnTime      = Time.time;
+        _isDead         = false;
     }
 
-    void Update()
+    private void Update()
     {
-        if (isDead) return;
-/*        transform.position += direction * speed * Time.deltaTime;*/
-        if (Time.time - spawnTime > lifetime) Kill();
+        if (_isDead) return;
+        if (Time.time - _spawnTime > lifetime) Kill();
 
 
-/*        // 1. lifetime 체크 (안전장치)
-        if (Time.time - spawnTime > lifetime)
-        {
-            Kill();
-            return;
-        }*/
-
+        // 1. lifetime 체크 (안전장치)
         // 2. 이동 + 충돌 체크
-        Vector3 move = direction * speed * Time.deltaTime;
+        var move = _direction * (_speed * Time.deltaTime);
 
         if (Physics.Linecast(transform.position, transform.position + move, out RaycastHit hit))
         {
@@ -58,39 +50,33 @@ public class Bullet : MonoBehaviour
     }
 
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if (isDead) return;
+        if (_isDead) return;
 
         // 다른 탄환과는 충돌 무시
         if (other.GetComponent<Bullet>() != null) return;
 
         if (isPlayerBullet)
         {
-            // 플레이어 탄 → 적 피격
-            var enemy = other.GetComponentInParent<EnemyController>();
-            if (enemy != null) { enemy.TakeDamage(damage); Kill(); return; }
+            // 플레이어 탄 → 적 피격 (EnemyController 타입 불필요 — 태그+루트 GameObject 전달)
+            var root = other.transform.root;
+            if (!root.CompareTag("Enemy")) return;
+            EventBus<BulletHitEnemyEvent>.Raise(new BulletHitEnemyEvent(root.gameObject, damage));
         }
         else
         {
-            // 적 탄 → 플레이어 피격
-            var stats = other.GetComponentInParent<PlayerStats>();
-            if (stats != null) { stats.TakeDamage(damage); Kill(); return; }
+            // 적 탄 → 플레이어 피격 (루트 오브젝트 태그만 확인 — PlayerStats 직접 참조 불필요)
+            if (!other.transform.root.CompareTag("Player")) return;
+            EventBus<BulletHitPlayerEvent>.Raise(new BulletHitPlayerEvent(damage));
         }
 
-/*        // 벽 태그와 충돌 시 소멸
-        if (other.CompareTag("Wall"))
-        {
-            Kill();
-            Debug.Log("Hit Wall");
-        }*/
-        
-        
+        Kill();
     }
 
-    void Kill()
+    private void Kill()
     {
-        isDead = true;
+        _isDead = true;
         gameObject.SetActive(false);
     }
 }

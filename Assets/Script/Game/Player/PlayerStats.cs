@@ -1,8 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using static GameManager;
-using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem.Processors;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// 각자의 지옥 - 플레이어 스탯 시스템
@@ -11,20 +9,37 @@ using UnityEngine.InputSystem.Processors;
 /// 스트레스 루프:
 ///   전투 중 스트레스 축적 → 임계점 도달 → 전투 불능(3초)
 ///   → 회복 시 '각성' 상태 발동 (공격속도/이동속도 1.5배, 5초)
+///
+/// 이벤트 버스:
+///   구독 EnemyCountChangedEvent    - 전투 상태(inCombat) 판단
+///   구독 BulletHitPlayerEvent     - 적 탄환 피격 → TakeDamage 처리
+///   구독 EnemyContactDamageEvent  - 적 접촉 피격 → TakeDamage 처리
+///   구독 ExpOrbPickedUpEvent      - 경험치 오브 획득 → AddExp 처리
+///   구독 ItemOrbPickedUpEvent     - 아이템 오브 획득 → AddItem 처리
+///   발행 PlayerStatsChangedEvent   - HP/Stress/상태 변경 시 HUD 캐시 갱신 요청
+///   발행 PlayerDamagedEvent        - 피해 발생
+///   발행 PlayerDiedEvent           - 사망
+///   발행 PlayerIncapacitatedEvent  - 전투 불능 진입
+///   발행 PlayerAwakenedEvent       - 각성 진입
+///   발행 PlayerAwakenedEndedEvent  - 각성 종료
+///   발행 ExpGainedEvent            - 경험치 획득
+///   발행 LevelUpEvent             - 경험치 임계치 도달 시 레벨업 UI 요청
+///   발행 ItemGainedEvent           - 아이템 획득
+///   발행 GameStatusEvent           - HUD 메시지 요청
 /// </summary>
 [RequireComponent(typeof(Renderer))]
 public class PlayerStats : MonoBehaviour
 {
 
-    private PlayerDeath death;
-    private bool CancleAwake = false;
+    private PlayerDeath _death;
+    private bool _cancelAwake;
 
-    [Header("HP")]
-    public float maxHP      = 100f;
-    public float currentHP;
+    [FormerlySerializedAs("maxHP")] [Header("HP")]
+    public float maxHp      = 100f;
+    [FormerlySerializedAs("currentHP")] public float currentHp;
 
-    [Header("목업용(GUI) 테스트 버전 보여주기 스텟")]
-    public float Damage = 10f;
+    [FormerlySerializedAs("Damage")] [Header("목업용(GUI) 테스트 버전 보여주기 스텟")]
+    public float damage = 10f;
 
     [Header("Stress (스트레스 수치)")]
     public float maxStress             = 100f;
@@ -35,17 +50,13 @@ public class PlayerStats : MonoBehaviour
     public float awakenedDuration      = 5f;   // 각성 지속 시간(초)
 
     [Header("목업용 경험치")]
-    public int currentExp = 0;
-    public int currentItem = 0;
-    public LevelUpUI lvUp;
+    public int currentExp;
+    public int currentItem;
 
 
     // ─── 상태 플래그 ───────────────────────────────────────────
     public bool IsIncapacitated { get; private set; }
-    public bool IsAwakened      { get; private set; }
-
-    // ─── 이벤트 ────────────────────────────────────────────────
-    public event System.Action onDeath;
+    private bool IsAwakened      { get; set; }
 
     // ─── 색상 상수 ─────────────────────────────────────────────
     static readonly Color NormalColor      = new Color(0.30f, 0.55f, 0.85f); // 파란 회색
@@ -53,86 +64,123 @@ public class PlayerStats : MonoBehaviour
     static readonly Color AwakenColor      = new Color(1.00f, 0.80f, 0.10f); // 황금색
     static readonly Color DamageFlashColor = new Color(1.00f, 0.20f, 0.20f); // 빨간색
 
-    private Renderer[] renderers;
-    private Coroutine  stressCoroutine;
+    private Renderer[] _renderers;
+    private Coroutine  _stressCoroutine;
+    private int        _enemyCount;
+
+    // ─── 헬퍼 ─────────────────────────────────────────────────
+    private void RaiseStatsChanged() =>
+        EventBus<PlayerStatsChangedEvent>.Raise(new PlayerStatsChangedEvent(
+            currentHp, maxHp, currentStress, maxStress, damage, IsIncapacitated, IsAwakened));
 
     // ───────────────────────────────────────────────────────────
 
     private void Awake()
     {
-        death = GetComponent<PlayerDeath>();
-    }
-    void Start()
-    {
-        currentHP     = maxHP;
-        currentStress = 0f;
-        renderers     = GetComponentsInChildren<Renderer>();
-        CancleAwake = false;
-        lvUp = GetComponent<LevelUpUI>();
-        SetColor(NormalColor);
+        _death = GetComponent<PlayerDeath>();
     }
 
-    void Update()
+    private void OnEnable()
+    {
+        EventBus<EnemyCountChangedEvent>.Subscribe(OnEnemyCountChanged);
+        EventBus<BulletHitPlayerEvent>.Subscribe(OnBulletHit);
+        EventBus<EnemyContactDamageEvent>.Subscribe(OnEnemyContact);
+        EventBus<ExpOrbPickedUpEvent>.Subscribe(OnExpOrbPickedUp);
+        EventBus<ItemOrbPickedUpEvent>.Subscribe(OnItemOrbPickedUp);
+    }
+
+    private void OnDisable()
+    {
+        EventBus<EnemyCountChangedEvent>.Unsubscribe(OnEnemyCountChanged);
+        EventBus<BulletHitPlayerEvent>.Unsubscribe(OnBulletHit);
+        EventBus<EnemyContactDamageEvent>.Unsubscribe(OnEnemyContact);
+        EventBus<ExpOrbPickedUpEvent>.Unsubscribe(OnExpOrbPickedUp);
+        EventBus<ItemOrbPickedUpEvent>.Unsubscribe(OnItemOrbPickedUp);
+    }
+
+    private void OnEnemyCountChanged(EnemyCountChangedEvent evt)   => _enemyCount = evt.Count;
+    private void OnBulletHit(BulletHitPlayerEvent evt)             => TakeDamage(evt.Damage);
+    private void OnEnemyContact(EnemyContactDamageEvent evt)       => TakeDamage(evt.Damage);
+    private void OnExpOrbPickedUp(ExpOrbPickedUpEvent evt)         => AddExp(evt.Amount);
+    private void OnItemOrbPickedUp(ItemOrbPickedUpEvent evt)       => AddItem(evt.Amount);
+
+    private void Start()
+    {
+        currentHp     = maxHp;
+        currentStress = 0f;
+        _renderers     = GetComponentsInChildren<Renderer>();
+        _cancelAwake = false;
+        SetColor(NormalColor);
+        RaiseStatsChanged();
+    }
+
+    private void Update()
     {
         if (IsIncapacitated || IsAwakened) return;
 
         // 적이 살아있으면 스트레스 증가, 없으면 감소
-        bool inCombat = EnemyController.ActiveCount > 0;
-        if (inCombat)
-            currentStress = Mathf.Min(currentStress + stressGainRate * Time.deltaTime, maxStress);
-        else
-            currentStress = Mathf.Max(currentStress - stressRecoveryRate * Time.deltaTime, 0f);
+        var inCombat = _enemyCount > 0;
+        var prevStress = currentStress;
+        currentStress = inCombat ? Mathf.Min(currentStress + stressGainRate * Time.deltaTime, maxStress) : Mathf.Max(currentStress - stressRecoveryRate * Time.deltaTime, 0f);
+
+        if (!Mathf.Approximately(currentStress, prevStress))
+            RaiseStatsChanged();
 
         if (currentStress >= maxStress)
-            stressCoroutine = StartCoroutine(IncapRoutine());
+            _stressCoroutine = StartCoroutine(IncapRoutine());
     }
 
     // ─── 피해 처리 ─────────────────────────────────────────────
-    public void TakeDamage(float amount)
+    private void TakeDamage(float amount)
     {
         if (IsIncapacitated) return;
 
-        currentHP     = Mathf.Max(currentHP - amount, 0f);
+        currentHp     = Mathf.Max(currentHp - amount, 0f);
         currentStress = Mathf.Min(currentStress + amount * 0.4f, maxStress);
 
+        EventBus<PlayerDamagedEvent>.Raise(new PlayerDamagedEvent(amount));
+        RaiseStatsChanged();
         StartCoroutine(DamageFlash());
 
-        if (currentHP <= 0f) Die();
+        if (currentHp <= 0f) Die();
     }
 
     void Die()
     {
-        if (death != null)
+        if (_death != null)
         {
-            death.HandleDeath();
-            CancleAwake = true;
+            _death.HandleDeath();
+            _cancelAwake = true;
+            EventBus<PlayerDiedEvent>.Raise(new PlayerDiedEvent());
         }
     }
 
     public void ReviveForMockup(int hp)
     {
-        currentHP = hp;
-        Debug.Log("부활 HP : " + currentHP);
+        currentHp = hp;
+        RaiseStatsChanged();
+        Debug.Log("부활 HP : " + currentHp);
     }
 
     // ─── 경험치 ────────────────────────────────
 
-    public void AddExp(int amount)
+    private void AddExp(int amount)
     {
         currentExp += amount;
+        EventBus<ExpGainedEvent>.Raise(new ExpGainedEvent(amount));
         Debug.Log($"경험치 획득! +{amount} / 현재 경험치 : {currentExp}");
 
-        if (currentExp >= 10 && !lvUp.showLevelUpUI)
+        if (currentExp >= 10)
         {
-            lvUp.showLevelUpUI = true;
-            Time.timeScale = 0f;
-            Debug.Log("amount 초기화"); currentExp -= 10;
+            currentExp -= 10;
+            EventBus<LevelUpEvent>.Raise(new LevelUpEvent());
         }
     }
 
-    public void AddItem(int amount2)
+    private void AddItem(int amount2)
     {
         currentItem += amount2;
+        EventBus<ItemGainedEvent>.Raise(new ItemGainedEvent(amount2));
         Debug.Log($"아이템 획득! +{amount2} / 현재 흭득 아이템 갯수 : {currentItem}");
     }
 
@@ -142,10 +190,12 @@ public class PlayerStats : MonoBehaviour
     // ─── 전투 불능 → 각성 루틴 ────────────────────────────────
     IEnumerator IncapRoutine()
     {
-        if (CancleAwake) { yield break; } 
+        if (_cancelAwake) { yield break; }
         IsIncapacitated = true;
         SetColor(IncapColor);
-        GameManager.Instance?.PostStatus("전투 불능!");
+        EventBus<PlayerIncapacitatedEvent>.Raise(new PlayerIncapacitatedEvent());
+        EventBus<GameStatusEvent>.Raise(new GameStatusEvent("전투 불능!"));
+        RaiseStatsChanged();
 
         yield return new WaitForSeconds(incapacitatedDuration);
 
@@ -155,13 +205,17 @@ public class PlayerStats : MonoBehaviour
         // 각성
         IsAwakened = true;
         SetColor(AwakenColor);
-        GameManager.Instance?.PostStatus("각성!");
+        EventBus<PlayerAwakenedEvent>.Raise(new PlayerAwakenedEvent());
+        EventBus<GameStatusEvent>.Raise(new GameStatusEvent("각성!"));
+        RaiseStatsChanged();
 
         yield return new WaitForSeconds(awakenedDuration);
 
         IsAwakened = false;
         SetColor(NormalColor);
-        GameManager.Instance?.PostStatus("");
+        EventBus<PlayerAwakenedEndedEvent>.Raise(new PlayerAwakenedEndedEvent());
+        EventBus<GameStatusEvent>.Raise(new GameStatusEvent("", 0f));
+        RaiseStatsChanged();
     }
 
     IEnumerator DamageFlash()
@@ -173,7 +227,7 @@ public class PlayerStats : MonoBehaviour
 
     void SetColor(Color c)
     {
-        foreach (var r in renderers)
+        foreach (var r in _renderers)
             if (r != null) r.material.color = c;
     }
 }

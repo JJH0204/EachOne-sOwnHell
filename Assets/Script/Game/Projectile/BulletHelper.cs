@@ -3,14 +3,14 @@ using UnityEngine;
 
 public static class BulletHelper
 {
-    static Material s_playerMat;
-    static Material s_enemyMat;
-    static readonly List<Bullet> s_pool = new List<Bullet>();
-    static int s_initialSize = 30;
+    private static Material _sPlayerMat;
+    private static Material _sEnemyMat;
+    private static readonly List<Bullet> SPool = new List<Bullet>();
+    private const int SInitialSize = 30;
 
     static BulletHelper()
     {
-        for (int i = 0; i < s_initialSize; i++)
+        for (var i = 0; i < SInitialSize; i++)
         {
             CreateBullet(true).gameObject.SetActive(false);
             CreateBullet(false).gameObject.SetActive(false);
@@ -19,18 +19,18 @@ public static class BulletHelper
 
     public static void ClearPool()
     {
-        s_pool.Clear();
-        s_playerMat = null;
-        s_enemyMat = null;
+        SPool.Clear();
+        _sPlayerMat = null;
+        _sEnemyMat = null;
     }
 
     public static Bullet Spawn(Vector3 position, Vector3 direction, float speed, bool isPlayerBullet, bool isAutoAimBullet)
     {
         Bullet bullet = GetBullet(isPlayerBullet);
 
-        if (bullet == null)
+        if (!bullet)
         {
-            Debug.LogWarning("°¡Á®¿Ã BulletÀÌ ¾øÀ½");
+            Debug.LogWarning("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Bulletï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
             return null;
         }
 
@@ -43,10 +43,7 @@ public static class BulletHelper
 
         if (isPlayerBullet)
         {
-            if (isAutoAimBullet)
-                rend.material.color = new Color(0.20f, 0.80f, 1.00f);
-            else
-                rend.material.color = new Color(1.00f, 0.90f, 0.10f);
+            rend.material.color = isAutoAimBullet ? new Color(0.20f, 0.80f, 1.00f) : new Color(1.00f, 0.90f, 0.10f);
         }
         else
         {
@@ -56,15 +53,15 @@ public static class BulletHelper
         return bullet;
     }
 
-    static Bullet GetBullet(bool isPlayerBullet)
+    private static Bullet GetBullet(bool isPlayerBullet)
     {
-        for (int i = s_pool.Count - 1; i >= 0; i--)
+        for (var i = SPool.Count - 1; i >= 0; i--)
         {
-            Bullet bullet = s_pool[i];
+            var bullet = SPool[i];
 
-            if (bullet == null)
+            if (!bullet)
             {
-                s_pool.RemoveAt(i);
+                SPool.RemoveAt(i);
                 continue;
             }
 
@@ -78,13 +75,13 @@ public static class BulletHelper
         return newBullet;
     }
 
-    static Bullet CreateBullet(bool isPlayerBullet)
+    private static Bullet CreateBullet(bool isPlayerBullet)
     {
         GameObject go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         go.name = isPlayerBullet ? "PlayerBullet" : "EnemyBullet";
 
         GameObject poolFolder = GameObject.Find("--- Bullet Pool ---");
-        if (poolFolder == null)
+        if (!poolFolder)
         {
             poolFolder = new GameObject("--- Bullet Pool ---");
         }
@@ -99,23 +96,27 @@ public static class BulletHelper
 
         if (isPlayerBullet)
         {
-            if (s_playerMat == null)
+            if (!_sPlayerMat)
             {
-                s_playerMat = new Material(rend.sharedMaterial);
-                s_playerMat.color = new Color(1.00f, 0.90f, 0.10f);
+                _sPlayerMat = new Material(rend.sharedMaterial)
+                {
+                    color = new Color(1.00f, 0.90f, 0.10f)
+                };
             }
 
-            rend.sharedMaterial = s_playerMat;
+            rend.sharedMaterial = _sPlayerMat;
         }
         else
         {
-            if (s_enemyMat == null)
+            if (!_sEnemyMat)
             {
-                s_enemyMat = new Material(rend.sharedMaterial);
-                s_enemyMat.color = new Color(1.00f, 0.20f, 0.20f);
+                _sEnemyMat = new Material(rend.sharedMaterial)
+                {
+                    color = new Color(1.00f, 0.20f, 0.20f)
+                };
             }
 
-            rend.sharedMaterial = s_enemyMat;
+            rend.sharedMaterial = _sEnemyMat;
         }
 
         var col = go.GetComponent<SphereCollider>();
@@ -124,7 +125,7 @@ public static class BulletHelper
         var bullet = go.AddComponent<Bullet>();
         bullet.isPlayerBullet = isPlayerBullet;
 
-        s_pool.Add(bullet);
+        SPool.Add(bullet);
 
         return bullet;
     }
