@@ -10,18 +10,18 @@ public class QuarterviewCamera : MonoBehaviour
     public Transform target;
 
     [Header("Offset & Angle")]
-    public Vector3 offset = new Vector3(-9f, 13f, -9f);
+    public Vector3 offset = new (-9f, 13f, -9f);
     public float pitchAngle = 45f;   // 수직 기울기
     public float yawAngle   = 45f;   // 수평 회전 (45 = 등각)
 
     [Header("Smoothing")]
     public float smoothSpeed = 8f;
 
-    void LateUpdate()
+    private void LateUpdate()
     {
-        if (target == null) return;
+        if (!target) return;
 
-        Vector3 desiredPos = target.position + offset;
+        var desiredPos = target.position + offset;
         transform.position  = Vector3.Lerp(transform.position, desiredPos, smoothSpeed * Time.deltaTime);
         transform.rotation  = Quaternion.Euler(pitchAngle, yawAngle, 0f);
     }

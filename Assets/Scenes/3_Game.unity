@@ -686,7 +686,7 @@ MonoBehaviour:
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 0}
+    TrackingTarget: {fileID: 853681885}
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
@@ -718,7 +718,7 @@ Transform:
   m_GameObject: {fileID: 78768769}
   serializedVersion: 2
   m_LocalRotation: {x: 0.41151026, y: 0.34262568, z: -0.17045316, w: 0.8271715}
-  m_LocalPosition: {x: 0, y: 1.1900005, z: 0}
+  m_LocalPosition: {x: 0.76591015, y: 0.94000053, z: 0.53685}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1655,7 +1655,7 @@ GameObject:
   m_Component:
   - component: {fileID: 183018989}
   m_Layer: 0
-  m_Name: Camera
+  m_Name: CameraManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6164,44 +6164,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2270cf8d7293a9a45912e607aac4aaa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChangeCharacter
-  Ada: {fileID: 1698292912}
-  TestPlayer: {fileID: 1171049994}
-  button1:
-    m_Name: Button 1
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 2f2b2b63-66a1-48d7-ac6e-f889ad3ec561
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 17456cfa-5dd9-4034-a127-d88b7b3a4184
-      m_Path: <Keyboard>/q
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Button 1
-      m_Flags: 0
-    m_Flags: 0
-  button2:
-    m_Name: Button 2
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 1cb43eae-73cb-432a-ad7f-0f2a28fca6dd
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: c9ae75e5-cfb5-4a96-888b-330a0fe8c1cd
-      m_Path: <Keyboard>/e
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Button 2
-      m_Flags: 0
-    m_Flags: 0
+  ada: {fileID: 1698292912}
+  testPlayer: {fileID: 1171049994}
   vcam: {fileID: 78768771}
-  GUI: {fileID: 1245629021}
 --- !u!4 &853681885
 Transform:
   m_ObjectHideFlags: 0
@@ -8250,40 +8215,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDeath
   difficulty: 1
   isDead: 0
-  retryKey:
-    m_Name: Retry Key
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: ba03609f-6595-47a8-9e89-10b77a514dff
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 3f5d0cf9-3197-4453-9e64-0627816c3759
-      m_Path: <Keyboard>/r
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Retry Key
-      m_Flags: 0
-    m_Flags: 0
-  EndGameKey:
-    m_Name: End Game Key
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 92f89d24-5a42-44d8-8a35-18b81afbe892
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 49fabf6a-5cde-413e-a5ae-dad4f6c807b9
-      m_Path: <Keyboard>/f
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: End Game Key
-      m_Flags: 0
-    m_Flags: 0
   moveScript: {fileID: 1171050001}
   autoAttackScript: {fileID: 1171049999}
   bEndingUnlockTime: 10
@@ -8476,8 +8407,8 @@ MonoBehaviour:
   fireInterval: 0.3
   attackRange: 10
   bulletSpeed: 12
-  Skill: {fileID: 0}
-  Stats: {fileID: 1171050002}
+  skill: {fileID: 0}
+  stats: {fileID: 1171050002}
 --- !u!114 &1171050000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8492,42 +8423,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player_LaserAttack
   firePoint: {fileID: 1841688315}
   isUsingSkill: 0
-  fireRate: 0.15
-  bulletSpeed: 20
-  Skill1Action:
-    m_Name: Skill 1
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: f5b03522-2f1a-40d0-bd60-1d6b310e3e67
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 558dd079-8d0f-4f5b-9303-5ba314f61a67
-      m_Path: <Mouse>/leftButton
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Skill 1
-      m_Flags: 0
-    m_Flags: 0
-  Skill2Action:
-    m_Name: Skill 2
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: f78284db-501a-4809-aacd-6eea4956b30f
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 6a722637-6a94-4685-b794-fc7e67801454
-      m_Path: <Mouse>/rightButton
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Skill 2
-      m_Flags: 0
-    m_Flags: 0
   skill1Damage: 30
   skill1Range: 20
   skill1Cooldown: 3
@@ -8554,75 +8449,9 @@ MonoBehaviour:
   rotationSpeed: 600
   fireRate: 0.15
   bulletSpeed: 20
-  firePOoint: {fileID: 0}
+  firePoint: {fileID: 0}
   isLobby: 0
   tryShoot: 0
-  MoveAction:
-    m_Name: Move
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: d47ebc02-3ebe-4abf-9ebd-94435aba2076
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 2D Vector
-      m_Id: 52db04af-cad9-41fd-9da0-c1de9c339c4e
-      m_Path: 2DVector
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 4
-    - m_Name: up
-      m_Id: 2918bcb9-1a07-4450-a56f-c7896d08b2c3
-      m_Path: <Keyboard>/w
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 8
-    - m_Name: down
-      m_Id: 53821375-60de-4c7f-8b91-5deb8427df2a
-      m_Path: <Keyboard>/s
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 8
-    - m_Name: left
-      m_Id: 0a17b0c5-f449-47a5-995a-2c96377da5e2
-      m_Path: <Keyboard>/a
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 8
-    - m_Name: right
-      m_Id: 5aaf3086-a044-4d4d-ac56-12d6e10f23b4
-      m_Path: <Keyboard>/d
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 8
-    m_Flags: 0
-  RollAction:
-    m_Name: Roll
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 9088b115-ab46-484c-a008-54843aba7eab
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 9eb0a361-5b39-4f1a-b28f-82e3fb0b6651
-      m_Path: <Keyboard>/shift
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Roll
-      m_Flags: 0
-    m_Flags: 0
 --- !u!114 &1171050002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8635,9 +8464,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45d3527edd1334199bded8703705deac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  maxHP: 100
-  currentHP: 100
-  Damage: 10
+  maxHp: 100
+  currentHp: 100
+  damage: 10
   maxStress: 100
   currentStress: 0
   stressGainRate: 4
@@ -8646,7 +8475,6 @@ MonoBehaviour:
   awakenedDuration: 5
   currentExp: 0
   currentItem: 0
-  lvUp: {fileID: 0}
 --- !u!54 &1171050003
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -9199,8 +9027,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1245629020}
   - component: {fileID: 1245629021}
+  - component: {fileID: 1245629022}
   m_Layer: 0
-  m_Name: GUI
+  m_Name: GUIManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9233,31 +9062,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e10acfd1f3e9c940a52af7d56c293e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestDrawGUI
-  is_Lobby: 0
-  use_esc: 0
-  is_Arena: 0
-  is_Ada: 0
-  esc:
-    m_Name: Esc
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 8804166f-6487-41ad-a423-8e5042e647e4
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 6c152083-447b-4c0f-9a8b-35c1e6dd85b6
-      m_Path: <Keyboard>/escape
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Esc
-      m_Flags: 0
-    m_Flags: 0
-  Ada: {fileID: 0}
-  playerStats: {fileID: 0}
-  playerController: {fileID: 0}
-  laserAttack: {fileID: 0}
+  isLobby: 0
+  useEsc: 0
+  isArena: 0
+  isAda: 0
+--- !u!114 &1245629022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245629019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c04c920c0274157ac960b47a9c0e311, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game.Core::Game.Core.GUIManager
 --- !u!1001 &1247438463
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12319,40 +12139,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDeath
   difficulty: 1
   isDead: 0
-  retryKey:
-    m_Name: Retry Key
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: ba03609f-6595-47a8-9e89-10b77a514dff
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 3f5d0cf9-3197-4453-9e64-0627816c3759
-      m_Path: <Keyboard>/r
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Retry Key
-      m_Flags: 0
-    m_Flags: 0
-  EndGameKey:
-    m_Name: End Game Key
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 92f89d24-5a42-44d8-8a35-18b81afbe892
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 49fabf6a-5cde-413e-a5ae-dad4f6c807b9
-      m_Path: <Keyboard>/f
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: End Game Key
-      m_Flags: 0
-    m_Flags: 0
   moveScript: {fileID: 1698292918}
   autoAttackScript: {fileID: 1698292916}
   bEndingUnlockTime: 10
@@ -12545,8 +12331,8 @@ MonoBehaviour:
   fireInterval: 0.3
   attackRange: 10
   bulletSpeed: 12
-  Skill: {fileID: 0}
-  Stats: {fileID: 1698292919}
+  skill: {fileID: 0}
+  stats: {fileID: 1698292919}
 --- !u!114 &1698292917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12561,42 +12347,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player_LaserAttack
   firePoint: {fileID: 1540669055}
   isUsingSkill: 0
-  fireRate: 0.15
-  bulletSpeed: 20
-  Skill1Action:
-    m_Name: Skill 1
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: f5b03522-2f1a-40d0-bd60-1d6b310e3e67
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 558dd079-8d0f-4f5b-9303-5ba314f61a67
-      m_Path: <Mouse>/leftButton
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Skill 1
-      m_Flags: 0
-    m_Flags: 0
-  Skill2Action:
-    m_Name: Skill 2
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: f78284db-501a-4809-aacd-6eea4956b30f
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 6a722637-6a94-4685-b794-fc7e67801454
-      m_Path: <Mouse>/rightButton
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Skill 2
-      m_Flags: 0
-    m_Flags: 0
   skill1Damage: 30
   skill1Range: 20
   skill1Cooldown: 3
@@ -12623,75 +12373,9 @@ MonoBehaviour:
   rotationSpeed: 600
   fireRate: 0.15
   bulletSpeed: 20
-  firePOoint: {fileID: 0}
+  firePoint: {fileID: 0}
   isLobby: 0
   tryShoot: 0
-  MoveAction:
-    m_Name: Move
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: d47ebc02-3ebe-4abf-9ebd-94435aba2076
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 2D Vector
-      m_Id: 52db04af-cad9-41fd-9da0-c1de9c339c4e
-      m_Path: 2DVector
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 4
-    - m_Name: up
-      m_Id: 2918bcb9-1a07-4450-a56f-c7896d08b2c3
-      m_Path: <Keyboard>/w
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 8
-    - m_Name: down
-      m_Id: 53821375-60de-4c7f-8b91-5deb8427df2a
-      m_Path: <Keyboard>/s
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 8
-    - m_Name: left
-      m_Id: 0a17b0c5-f449-47a5-995a-2c96377da5e2
-      m_Path: <Keyboard>/a
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 8
-    - m_Name: right
-      m_Id: 5aaf3086-a044-4d4d-ac56-12d6e10f23b4
-      m_Path: <Keyboard>/d
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 8
-    m_Flags: 0
-  RollAction:
-    m_Name: Roll
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 9088b115-ab46-484c-a008-54843aba7eab
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 9eb0a361-5b39-4f1a-b28f-82e3fb0b6651
-      m_Path: <Keyboard>/shift
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Roll
-      m_Flags: 0
-    m_Flags: 0
 --- !u!114 &1698292919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12704,9 +12388,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45d3527edd1334199bded8703705deac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  maxHP: 100
-  currentHP: 100
-  Damage: 10
+  maxHp: 100
+  currentHp: 100
+  damage: 10
   maxStress: 100
   currentStress: 0
   stressGainRate: 4
@@ -12715,7 +12399,6 @@ MonoBehaviour:
   awakenedDuration: 5
   currentExp: 0
   currentItem: 0
-  lvUp: {fileID: 0}
 --- !u!54 &1698292920
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -13509,7 +13192,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1794251525}
   m_Layer: 0
-  m_Name: Managers
+  m_Name: Core
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15308,7 +14991,7 @@ GameObject:
   - component: {fileID: 2042908924}
   - component: {fileID: 2042908925}
   m_Layer: 0
-  m_Name: Game
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: -5397416234189338067, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -15341,11 +15024,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc5071a93a5d94d6496018fa7a117a1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  enemySpawnInterval: 1
-  maxEnemies: 30
-  arenaRadius: 14
-  expOrbPrefab: {fileID: 6186754142981803850, guid: 7af3e30da6d724748ac5300fea90bb29, type: 3}
-  itemPrefab: {fileID: 6088315225354371719, guid: 324fe82b54e987f4fa110e49edac6b2b, type: 3}
 --- !u!1 &2045624270 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 1d7b83bc93bcfa244a78d3d4fbbb81ae, type: 3}
@@ -15558,7 +15236,7 @@ Transform:
   m_GameObject: {fileID: 2062090258}
   serializedVersion: 2
   m_LocalRotation: {x: 0.41151026, y: 0.34262568, z: -0.17045316, w: 0.8271715}
-  m_LocalPosition: {x: 0, y: 1.1900005, z: 0}
+  m_LocalPosition: {x: 0.76591015, y: 0.94000053, z: 0.53685}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
