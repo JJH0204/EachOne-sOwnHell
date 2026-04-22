@@ -1,0 +1,14 @@
+root = true
+
+[*]
+indent_style = space          # space 또는 tab 선택
+indent_size = 2               # 들여쓰기 칸 수
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.cs]
+indent_size = 2               # C# 파일에만 별도 적용 가능

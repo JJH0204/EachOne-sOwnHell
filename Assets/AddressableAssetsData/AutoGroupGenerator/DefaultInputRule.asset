@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42a7e06df7f448b2b4546ea1c74c18a5, type: 3}
   m_Name: DefaultInputRule
   m_EditorClassIdentifier: Unity.AutoGroupGenerator.Editor::AutoGroupGenerator.AssetSelectionInputRule
-  m_SelectedAssets: []
+  m_SelectedAssets:
+  - {fileID: 102900000, guid: 9d332709cc1874742b070cd20c31e11c, type: 3}
+  - {fileID: 102900000, guid: 87f9f569321e3d34f868cf4f3ce57351, type: 3}
+  - {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05, type: 3}
+  - {fileID: 102900000, guid: b307491a9a0811d42923dcfecc071756, type: 3}
+  - {fileID: 102900000, guid: 40b0e8dac5765a24a9a7cc8b24981b6d, type: 3}
   m_JsonAssetLists: []
   m_IncludeCurrentAddressables: 1

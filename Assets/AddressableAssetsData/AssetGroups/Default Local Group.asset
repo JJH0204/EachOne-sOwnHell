@@ -14,10 +14,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
   m_GroupName: Default Local Group
   m_GUID: c812a379517ae4eb695f3cfdefb38b3a
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 40b0e8dac5765a24a9a7cc8b24981b6d
+    m_Address: TestEndingBScene
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87f9f569321e3d34f868cf4f3ce57351
+    m_Address: LobbyScene
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99c9720ab356a0642a771bea13969a05
+    m_Address: Arena
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d332709cc1874742b070cd20c31e11c
+    m_Address: StartScene
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b307491a9a0811d42923dcfecc071756
+    m_Address: EndingAScene
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: c5b8603fd714d4a808b16f429f5c038b, type: 2}
   m_SchemaSet:
     m_Schemas:
     - {fileID: 11400000, guid: 98d9e4ea03e4a4a3b8b2e604fc1a793c, type: 2}
     - {fileID: 11400000, guid: d0b913b3734964b5cb322fd4e3a65a42, type: 2}
+    - {fileID: 11400000, guid: d60b160b4c2f64f5fa12584f5a7c89be, type: 2}
