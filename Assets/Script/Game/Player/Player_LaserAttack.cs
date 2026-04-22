@@ -6,8 +6,8 @@ using UnityEngine.Serialization;
 /// <summary>
 /// 각자의 지옥 - 플레이어 레이저 스킬
 ///
-/// 스킬1 (Pierce Laser) : 관통 레이저 — 범위 내 모든 적에게 즉발 피해
-/// 스킬2 (Channeling Laser) : 채널링 레이저 — 가장 가까운 적에게 지속 피해
+/// 스킬1 (Pierce Laser) : 관통 레이저 — 범위 내 모든 적에게 즉발 피해  (Attack 액션 = 마우스 좌클릭)
+/// 스킬2 (Channeling Laser) : 채널링 레이저 — 가장 가까운 적에게 지속 피해  (Interact 액션 = E키)
 ///
 /// 이벤트 버스:
 ///   구독 GameOverEvent         - 게임 오버 시 스킬 입력 차단
@@ -19,10 +19,6 @@ public class PlayerLaserAttack : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform firePoint;
     [SerializeField] private bool isUsingSkill = false;
-
-    [FormerlySerializedAs("Skill1Action")] [Header("inputAction")]
-    public InputAction skill1Action;
-    [FormerlySerializedAs("Skill2Action")] public InputAction skill2Action;
 
     [Header("Skill1 - Pierce Laser")]
     [SerializeField] private float skill1Damage   = 30f;
@@ -43,7 +39,9 @@ public class PlayerLaserAttack : MonoBehaviour
 
     [SerializeField] private Camera mainCamera;
 
-    // ─── 내부 상태 ────────────────────────────────────────────────
+    private InputAction _skill1Action;
+    private InputAction _skill2Action;
+
     private bool        _isGameOver;
     private bool        _isChannelingLaser;
     private float       _nextSkill1Time;
@@ -56,7 +54,14 @@ public class PlayerLaserAttack : MonoBehaviour
         EventBus<PlayerSkillStateChangedEvent>.Raise(
             new PlayerSkillStateChangedEvent(_nextSkill1Time, skill1Cooldown, isUsingSkill));
 
-    // ─────────────────────────────────────────────────────────────
+    private void Awake()
+    {
+        var asset = Resources.Load<InputActionAsset>("InputSystem_Actions");
+        var playerMap = asset.FindActionMap("Player", throwIfNotFound: true);
+        _skill1Action = playerMap.FindAction("Attack",   throwIfNotFound: true);
+        _skill2Action = playerMap.FindAction("Interact", throwIfNotFound: true);
+    }
+
     private void Start()
     {
         _stats = GetComponent<PlayerStats>();
@@ -66,41 +71,37 @@ public class PlayerLaserAttack : MonoBehaviour
 
     private void OnEnable()
     {
-        skill1Action.performed += OnSkill1;
-        skill2Action.performed += OnSkill2Started;
-        skill2Action.canceled  += OnSkill2Cancelled;
-        skill1Action.Enable();
-        skill2Action.Enable();
-    
+        _skill1Action.performed += OnSkill1;
+        _skill2Action.started   += OnSkill2Started;
+        _skill2Action.canceled  += OnSkill2Cancelled;
+        _skill1Action.Enable();
+        _skill2Action.Enable();
+
         EventBus<GameOverEvent>.Subscribe(OnGameOver);
     }
-    
+
     private void OnDisable()
     {
-        skill1Action.performed -= OnSkill1;
-        skill2Action.performed -= OnSkill2Started;
-        skill2Action.canceled  -= OnSkill2Cancelled;
-        skill1Action.Disable();
-        skill2Action.Disable();
-    
+        _skill1Action.performed -= OnSkill1;
+        _skill2Action.started   -= OnSkill2Started;
+        _skill2Action.canceled  -= OnSkill2Cancelled;
+        _skill1Action.Disable();
+        _skill2Action.Disable();
+
         EventBus<GameOverEvent>.Unsubscribe(OnGameOver);
     }
 
     private void OnGameOver(GameOverEvent _) => _isGameOver = true;
 
-    // ─── 업데이트 ─────────────────────────────────────────────────
     private void Update()
     {
         if (_isGameOver) return;
         if (_stats.IsIncapacitated) return;
 
-        // AimToMouse();
-
         if (_isChannelingLaser)
             FireChannelingLaser();
     }
 
-    // ─── 입력 핸들러 ──────────────────────────────────────────────
     private void OnSkill1(InputAction.CallbackContext ctx) => StartCoroutine(UseSkill1());
 
     private void OnSkill2Started(InputAction.CallbackContext ctx)
@@ -119,7 +120,6 @@ public class PlayerLaserAttack : MonoBehaviour
         RaiseSkillStateChanged();
     }
 
-    // ─── 스킬1 : 관통 레이저 ─────────────────────────────────────
     private void TryFirePierceLaser()
     {
         if (Time.time < _nextSkill1Time) return;
@@ -165,7 +165,6 @@ public class PlayerLaserAttack : MonoBehaviour
         if (skill1Line != null) skill1Line.enabled = false;
     }
 
-    // ─── 스킬2 : 채널링 레이저 ───────────────────────────────────
     void FireChannelingLaser()
     {
         Vector3 origin    = firePoint.position;
@@ -199,19 +198,4 @@ public class PlayerLaserAttack : MonoBehaviour
     {
         if (skill2Line != null) skill2Line.enabled = false;
     }
-
-    // ─── 마우스 조준 ──────────────────────────────────────────────
-    // void AimToMouse()
-    // {
-    //     Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-    //     var groundPlane = new Plane(Vector3.up, Vector3.zero);
-    //
-    //     if (groundPlane.Raycast(ray, out float distance))
-    //     {
-    //         Vector3 dir = ray.GetPoint(distance) - transform.position;
-    //         dir.y = 0f;
-    //         if (dir.sqrMagnitude > 0.001f)
-    //             transform.forward = dir.normalized;
-    //     }
-    // }
 }

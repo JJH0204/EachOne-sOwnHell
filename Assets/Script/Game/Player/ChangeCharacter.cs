@@ -1,55 +1,55 @@
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 
 public class ChangeCharacter : MonoBehaviour
 {
-
-    [FormerlySerializedAs("Ada")] [Header("Character")]
+    [Header("Character")]
     public GameObject ada;
     public GameObject testPlayer;
 
-    [Header("ChangeButton")]
-    public InputAction button1;
-    public InputAction button2;
+    [SerializeField] private CinemachineCamera vcam;
 
+    private InputAction _button1;
+    private InputAction _button2;
 
-    [FormerlySerializedAs("_vcam")] [SerializeField] private CinemachineCamera vcam;
+    private void Awake()
+    {
+        var asset = Resources.Load<InputActionAsset>("InputSystem_Actions");
+        var playerMap = asset.FindActionMap("Player", throwIfNotFound: true);
+        _button1 = playerMap.FindAction("Previous", throwIfNotFound: true);
+        _button2 = playerMap.FindAction("Next",     throwIfNotFound: true);
+    }
 
     private void Start()
     {
         if (ada.activeSelf)
         {
             vcam.Target.TrackingTarget = ada.transform;
-            vcam.Target.LookAtTarget = ada.transform;
+            vcam.Target.LookAtTarget   = ada.transform;
         }
         else if (testPlayer.activeSelf)
         {
             vcam.Target.TrackingTarget = testPlayer.transform;
-            vcam.Target.LookAtTarget = testPlayer.transform;
+            vcam.Target.LookAtTarget   = testPlayer.transform;
         }
     }
 
     private void OnEnable()
     {
-        button1.performed += Bt1;
-        button2.performed += Bt2;
-
-        button1.Enable();
-        button2.Enable();
-
+        _button1.performed += Bt1;
+        _button2.performed += Bt2;
+        _button1.Enable();
+        _button2.Enable();
     }
 
     private void OnDisable()
     {
-        button1.performed -= Bt1;
-        button2.performed -= Bt2;
-
-        button1.Disable();
-        button2.Disable();
+        _button1.performed -= Bt1;
+        _button2.performed -= Bt2;
+        _button1.Disable();
+        _button2.Disable();
     }
-
 
     private void Bt1(InputAction.CallbackContext context)
     {
@@ -65,12 +65,9 @@ public class ChangeCharacter : MonoBehaviour
 
         ada.SetActive(false);
         testPlayer.SetActive(true);
-
         vcam.Target.TrackingTarget = testPlayer.transform;
-        vcam.Target.LookAtTarget = testPlayer.transform;
-
+        vcam.Target.LookAtTarget   = testPlayer.transform;
     }
-
 
     private void Bt2(InputAction.CallbackContext context)
     {
@@ -86,9 +83,7 @@ public class ChangeCharacter : MonoBehaviour
 
         ada.SetActive(true);
         testPlayer.SetActive(false);
-
         vcam.Target.TrackingTarget = ada.transform;
-        vcam.Target.LookAtTarget = ada.transform;
+        vcam.Target.LookAtTarget   = ada.transform;
     }
-
 }
