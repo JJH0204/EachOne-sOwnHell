@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
@@ -6,24 +7,24 @@ using UnityEngine.Serialization;
 public class TestEnterTheArena : MonoBehaviour
 {
 
-    [FormerlySerializedAs("Enter")] [SerializeField] private InputAction _enter;
-    
+    [SerializeField] private InputAction enter;
+
     private void OnEnable()
     {
-        _enter.performed += EnterKey;
-    
-        _enter.Enable();
+        enter.performed += EnterKey;
+
+        enter.Enable();
     }
 
     private void OnDisable()
     {
-        _enter.performed -= EnterKey;
-        _enter.Disable();
+        enter.performed -= EnterKey;
+        enter.Disable();
     }
 
-    private void EnterKey(InputAction.CallbackContext context)
+    private static void EnterKey(InputAction.CallbackContext context)
     {
-        SceneManager.LoadScene("Arena");
+        Addressables.LoadSceneAsync("Arena");
     }
 
     private void OnTriggerEnter(Collider other)
