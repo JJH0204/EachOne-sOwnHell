@@ -26,9 +26,12 @@ namespace Game.Core
 
     public bool IsGameOver { get; private set; }
 
+    #region 게임 시작시 UI가 출력 안됨 ***
+    //시작시 UI가 출력 안되다가 Enemy 등장 시 UI 출력되는 문제가 있었으며 SetPlayerStats 가 출력이 안되다가 리셋이 먼저 되는 현상으로 추측 됩니다
+    //추후 별도로 분리 시켜 초기화 함수로 만들 예정
     public void ResetViewState()
     {
-      _hasPlayerData = false;
+/*      _hasPlayerData = false;
       _hp = 0f;
       _maxHp = 0f;
       _stress = 0f;
@@ -38,8 +41,9 @@ namespace Game.Core
       _score = 0;
       _statusMessage = string.Empty;
       _statusExpireTime = 0f;
-      IsGameOver = false;
+      IsGameOver = false;*/
     }
+    #endregion 
 
     public void SetPlayerStats(float hp, float maxHp, float stress, float maxStress, bool isIncap, bool isAwakened)
     {
@@ -72,7 +76,7 @@ namespace Game.Core
     private void OnGUI()
     {
       DrawHUD();
-      if (IsGameOver) DrawGameOver();
+      /*      if (IsGameOver) DrawGameOver();*/
     }
 
     private void DrawHUD()
@@ -141,40 +145,42 @@ namespace Game.Core
       GUIStyle s = new GUIStyle(GUI.skin.label) { fontSize = 12, alignment = TextAnchor.MiddleLeft };
       GUI.Label(new Rect(x + 4, y, w - 4, h), label, s);
     }
-
-    void DrawGameOver()
-    {
-      GUI.color = new Color(0, 0, 0, 0.7f);
-      GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), Texture2D.whiteTexture);
-      GUI.color = Color.white;
-
-      var titleStyle = new GUIStyle(GUI.skin.label)
-      {
-        fontSize = 42,
-        alignment = TextAnchor.MiddleCenter,
-        fontStyle = FontStyle.Bold,
-        normal =
+    #region 게임오버 GUI 저장용 *
+    /*  TODO : 이미 PlayerDeath에 게임오버 관련 GUI가 있으나 추후 A난이도 사망시 곧 바로 엔딩영상 출력에서 바뀔 경우 사용할 예정
+    /*    void DrawGameOver()
         {
-          textColor = new Color(0.9f, 0.3f, 0.3f)
-        }
-      };
+          GUI.color = new Color(0, 0, 0, 0.7f);
+          GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), Texture2D.whiteTexture);
+          GUI.color = Color.white;
 
-      var subStyle = new GUIStyle(GUI.skin.label)
-      {
-        fontSize = 20,
-        alignment = TextAnchor.MiddleCenter,
-        normal =
-        {
-          textColor = Color.white
-        }
-      };
+          var titleStyle = new GUIStyle(GUI.skin.label)
+          {
+            fontSize = 42,
+            alignment = TextAnchor.MiddleCenter,
+            fontStyle = FontStyle.Bold,
+            normal =
+            {
+              textColor = new Color(0.9f, 0.3f, 0.3f)
+            }
+          };
 
-      float cx = Screen.width / 2f;
-      float cy = Screen.height / 2f;
+          var subStyle = new GUIStyle(GUI.skin.label)
+          {
+            fontSize = 20,
+            alignment = TextAnchor.MiddleCenter,
+            normal =
+            {
+              textColor = Color.white
+            }
+          };
 
-      GUI.Label(new Rect(cx - 200, cy - 80, 400, 70), "GAME OVER", titleStyle);
-      GUI.Label(new Rect(cx - 200, cy, 400, 40), $"FINAL SCORE : {_score:N0}", subStyle);
-      GUI.Label(new Rect(cx - 200, cy + 50, 400, 30), "R 키 : 재시작", subStyle);
-    }
+          float cx = Screen.width / 2f;
+          float cy = Screen.height / 2f;
+
+          GUI.Label(new Rect(cx - 200, cy - 80, 400, 70), "GAME OVER", titleStyle);
+          GUI.Label(new Rect(cx - 200, cy, 400, 40), $"FINAL SCORE : {_score:N0}", subStyle);
+          GUI.Label(new Rect(cx - 200, cy + 50, 400, 30), "R 키 : 재시작", subStyle);
+        }*/
+    #endregion
   }
 }

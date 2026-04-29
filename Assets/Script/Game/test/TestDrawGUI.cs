@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 
 public class TestDrawGUI : MonoBehaviour
 {
-    [FormerlySerializedAs("is_Lobby")] [Header("�׽�Ʈ GUI")]
+    [FormerlySerializedAs("is_Lobby")] [Header("Test GUI")]
     public bool isLobby = false;
     [FormerlySerializedAs("use_esc")] public bool useEsc = false;
     [FormerlySerializedAs("is_Arena")] public bool isArena = false;
@@ -112,7 +112,7 @@ public class TestDrawGUI : MonoBehaviour
         {
             GUI.color = new Color(1, 1, 1, 0.6f);
             GUI.Label(new Rect(Screen.width - 300, 10, 300, 110),
-                "WASD : �̵�\n �簢�� ������ ����Ű ������ Arena������ �Ѿ");
+                "WASD : wasd로 캐릭터 조작하며 사각형 안에 들어가 엔터 누를시 아레나로 진입 합니다");
             GUI.color = Color.white;
         }
 
@@ -129,7 +129,7 @@ public class TestDrawGUI : MonoBehaviour
                 }
             };
 
-            GUI.Label(new Rect(Screen.width / 2f - 100f, 20f, 200f, 40f), $"���� �� �� : {_enemyCount}", enemyCountStyle);
+            GUI.Label(new Rect(Screen.width / 2f - 100f, 20f, 200f, 40f), $"남은 적 수 : {_enemyCount}", enemyCountStyle);
 
 
             DrawEnemyHpBars();
@@ -180,11 +180,11 @@ public class TestDrawGUI : MonoBehaviour
             GUI.DrawTexture(new Rect(statBoxX, statBoxY, statBoxW, statBoxH), Texture2D.whiteTexture);
             GUI.color = Color.white;
 
-            GUI.Label(new Rect(cx - 200, cy - 200, 400, 70), "�Ͻ�����", titleStyle);
-            GUI.Label(new Rect(cx - 650, cy - 80, 400, 70), "���� ����", statsTitleStyle);
-            GUI.Label(new Rect(cx - 650, cy - -10, 200, 70), $"���ݷ� : {_damage}", subStyle);
-            GUI.Label(new Rect(cx - 650, cy - -100, 200, 70), $"ü�� : {_currentHp} ", subStyle);
-            GUI.Label(new Rect(cx - 650, cy - -200, 200, 70), $"�̼� : {_moveSpeed} ", subStyle);
+            GUI.Label(new Rect(cx - 200, cy - 200, 400, 70), "일시 정지", titleStyle);
+            GUI.Label(new Rect(cx - 650, cy - 80, 400, 70), "현재 스탯", statsTitleStyle);
+            GUI.Label(new Rect(cx - 650, cy - -10, 200, 70), $"데미지: {_damage}", subStyle);
+            GUI.Label(new Rect(cx - 650, cy - -100, 200, 70), $"체력 : {_currentHp} ", subStyle);
+            GUI.Label(new Rect(cx - 650, cy - -200, 200, 70), $"이동속도 : {_moveSpeed} ", subStyle);
 
         }
 

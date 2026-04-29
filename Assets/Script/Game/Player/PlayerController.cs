@@ -11,7 +11,8 @@ using UnityEngine.Serialization;
 ///   - 카메라 기준 이동 처리합니다
 ///   - 구르기 입력 과 구르기 쿨타임 처리합니다
 ///   - 게임오버 또는 전투불능시 움직이는걸 막습니다
-///
+/// 우선도:
+///   - 추후 작업 우선 순위가 높은건 *** 이며 * 가 낮아질수록 우선도가 낮습니다
 /// </summary>
 
 [RequireComponent(typeof(Rigidbody), typeof(PlayerStats))]
@@ -140,6 +141,8 @@ public class PlayerController : MonoBehaviour
     Roll(dir.normalized);
   }
 
+  #region 카메라 ***
+  //TODO : 추후 시네머신 카메라를 여러개 쓰이면서 Camera Manager 라던가 한곳에 모야아 할 경우 그때 분리 할 예정
   private Vector3 GetCameraRelativeMoveDirection()
   {
     Vector3 camForward = _mainCam.transform.forward;
@@ -153,8 +156,8 @@ public class PlayerController : MonoBehaviour
 
     return (camForward * _moveInput.y) + (camRight * _moveInput.x);
   }
-
-  #region Through the Wall ROLL
+  #endregion
+  #region 벽 관통 수정*
   //TODO : 구르기 쿨 타임용으로 지금은 냅두며 현 리기온은 추후 우선도 낮은 구르기 벽뚫는문제 해결하기 위함으로 둘것
   private void Roll(Vector3 dir)
   {

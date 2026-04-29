@@ -68,10 +68,12 @@ public class PlayerStats : MonoBehaviour
     private Coroutine  _stressCoroutine;
     private int        _enemyCount;
 
-    // ─── 헬퍼 ─────────────────────────────────────────────────
-    private void RaiseStatsChanged() =>
-        EventBus<PlayerStatsChangedEvent>.Raise(new PlayerStatsChangedEvent(
-            currentHp, maxHp, currentStress, maxStress, damage, IsIncapacitated, IsAwakened));
+  // ─── 헬퍼 ─────────────────────────────────────────────────
+  private void RaiseStatsChanged()
+  {
+    EventBus<PlayerStatsChangedEvent>.Raise(new PlayerStatsChangedEvent(
+        currentHp, maxHp, currentStress, maxStress, damage, IsIncapacitated, IsAwakened));
+  }
 
     // ───────────────────────────────────────────────────────────
 

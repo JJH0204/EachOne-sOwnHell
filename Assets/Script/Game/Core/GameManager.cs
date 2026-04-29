@@ -63,10 +63,10 @@ namespace Game.Core
     private void Update()
     {
       // 입력은 이벤트로만 전달하고 실제 처리 여부는 핸들러에서 판단한다.
-      if (Input.GetKeyDown(KeyCode.R))
+/*      if (Input.GetKeyDown(KeyCode.R))
       {
         EventBus<RestartRequestedEvent>.Raise(new RestartRequestedEvent());
-      }
+      }*/
     }
 
     private void OnRestartRequested(RestartRequestedEvent _)

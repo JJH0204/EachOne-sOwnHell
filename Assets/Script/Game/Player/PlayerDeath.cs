@@ -48,7 +48,7 @@ public class PlayerDeath : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(_bEndingUnlocked);
+ 
     }
 
     private IEnumerator StartBTimer()
