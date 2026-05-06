@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
+//TODO : 프로토타입 때 이 내용들은 GUIManager로 옮길 예정 입니다.
+
 public class TestDrawGUI : MonoBehaviour
 {
     [FormerlySerializedAs("is_Lobby")] [Header("Test GUI")]

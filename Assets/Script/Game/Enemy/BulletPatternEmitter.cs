@@ -1,6 +1,14 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// 각자의 지옥 - 적 패턴 관리
+///
+/// 역할:
+///   - 적 패턴을 지정 하거나 패턴을 추가 후 관리합니다
+///   - 엘리트,보스 패턴이 여러개 출력 되도록 관리합니다
+/// </summary>
+
 
 public class BulletPatternEmitter : MonoBehaviour
 {

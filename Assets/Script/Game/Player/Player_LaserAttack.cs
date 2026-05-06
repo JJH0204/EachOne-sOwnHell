@@ -9,6 +9,9 @@ using UnityEngine.Serialization;
 /// 스킬1 (Pierce Laser) : 관통 레이저 — 범위 내 모든 적에게 즉발 피해  (Attack 액션 = 마우스 좌클릭)
 /// 스킬2 (Channeling Laser) : 채널링 레이저 — 가장 가까운 적에게 지속 피해  (Interact 액션 = E키)
 ///
+/// 목업 단계의 스킬이며 추후 스킬 관련 스크립트의 기본 틀이 될 예정입니다
+///
+/// 
 /// 이벤트 버스:
 ///   구독 GameOverEvent         - 게임 오버 시 스킬 입력 차단
 ///   발행 BulletHitEnemyEvent   - 레이저 명중 시 적에게 피해 전달

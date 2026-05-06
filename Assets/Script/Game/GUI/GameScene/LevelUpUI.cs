@@ -1,5 +1,7 @@
 using UnityEngine;
 
+//TODO : 프로토타입 진입 후 작업 우선순위를 보고 GUIManager로 옮길 예정
+
 public class LevelUpUI : MonoBehaviour
 {
     public bool showLevelUpUI = false;

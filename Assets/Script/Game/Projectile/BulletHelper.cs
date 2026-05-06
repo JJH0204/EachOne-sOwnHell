@@ -1,6 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 각자의 지옥 - 총알 관리
+///
+/// 역할:
+///   - 총알을 오브젝트 풀로 관리하며 메모리에 부담이 되지 않게 합니다
+/// </summary>
+
+
 public static class BulletHelper
 {
     private static Material _sPlayerMat;
@@ -30,7 +38,7 @@ public static class BulletHelper
 
         if (!bullet)
         {
-            Debug.LogWarning("������ Bullet�� ����");
+            Debug.LogWarning("no Bullet");
             return null;
         }
 

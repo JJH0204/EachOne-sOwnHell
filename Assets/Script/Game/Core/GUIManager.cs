@@ -1,6 +1,19 @@
 using UnityEngine;
 
 namespace Game.Core
+
+/// <summary>
+/// 각자의 지옥 - GUI , OnGuI 처리 및 관리
+///
+/// 역할:
+///   - GUI 관련을 처리 합니다
+///   - OnGUI로 그려지는 GUI들을 처리합니다
+///   - 기본적인 GUI들은 여기서 관리 되거나 처리 합니다
+/// 우선도:
+///   - 추후 작업 우선 순위가 높은건 *** 이며 * 가 낮아질수록 우선도가 낮습니다
+///   - 게임 시작시 UI가 출력 안됨 (중요도3) : 프로토타입 진입 후 추가되는 내용에 따라 중요도3중 최우선이 되거나 중요도3중 후 순위가 됩니다
+///   - 게임 오버 GUI 저장용 (중요도1) : 현재 PlayerDeath 스크립트에서 출력되는 GUI랑 겹치는 상태라 주석처리 했으며 추후 변경 되는게 아니라면 프로토타입 종료 후 삭제 될 예정 입니다
+/// </summary>
 {
   public class GUIManager : Singleton<GUIManager>
   {

@@ -1,16 +1,27 @@
 using UnityEngine;
 
+/// <summary>
+/// ê°ìì˜ ì§€ì˜¥ - ì  ì•„ì´í…œ ê´€ë¦¬
+///
+/// ì—­í• :
+///   - í”Œë ˆì´ì–´ê°€ ì  ì²˜ì¹˜ì‹œ ë“œë ë˜ëŠ” ì•„ì´í…œ,ê²½í—˜ì¹˜ êµ¬ìŠ¬ ì²˜ë¦¬í•©ë‹ˆë‹¤
+///   - ì•„ì´í…œ,ê²½í—˜ì¹˜ êµ¬ìŠ¬ ë“œë¡­ ë²”ìœ„ë¥¼ ì •í•©ë‹ˆë‹¤
+/// TODO:
+///   - ì•„ì´í…œ ì¶”ê°€ ì˜ˆì • 
+/// </summary>
+
+
 public class MonsterDrop : MonoBehaviour
 {
-    [Header("µå¶ø ÇÁ¸®ÆÕ")]
+    [Header("ë“œë í”„ë¦¬íŒ¹")]
     public GameObject expOrbPrefab;
     [SerializeField] private GameObject itemPrefab;
     [SerializeField] private float dropRadius = 2f;
 
-    [Header("µå¶ø ¼³Á¤")]
+    [Header("ë“œë ì„¤ì •")]
     [SerializeField] private float itemDropChance = 0.3f; // 30%
 
-    [Header("½ºÅ×ÀÌÁö ¹üÀ§")]
+    [Header("ìŠ¤í…Œì´ì§€ ë²”ìœ„")]
     [SerializeField] private float minX = -20f;
     [SerializeField] private float maxX = 20f;
     [SerializeField] private float minZ = -20f;
@@ -20,14 +31,14 @@ public class MonsterDrop : MonoBehaviour
 
     public void DropItems()
     {
-        // °æÇèÄ¡ ±¸½½Àº È®Á¤ µå¶ø
+        // ê²½í—˜ì¹˜ êµ¬ìŠ¬ì€ í™•ì • ë“œë
         if (expOrbPrefab != null)
         {
             Vector3 expPos = GetClampedDropPosition();
             Instantiate(expOrbPrefab, expPos, Quaternion.identity);
         }
 
-        // ¾ÆÀÌÅÛÀº È®·ü µå¶ø
+        // ì•„ì´í…œì€ í™•ë¥  ë“œë
         if (itemPrefab != null && Random.value <= itemDropChance)
         {
             Vector3 itemPos = GetClampedDropPosition();

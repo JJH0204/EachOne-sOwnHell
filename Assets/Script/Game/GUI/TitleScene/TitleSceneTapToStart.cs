@@ -1,5 +1,18 @@
 using System.Linq;
 using UnityEngine;
+
+/// <summary>
+/// 각자의 지옥 - 씬 관리
+///
+/// 역할:
+///   - 씬 이동을 처리합니다
+///   - 다른 스크립트에서 씬 이동을 적지 않도록 여기서 관리 되게끔 합니다
+/// TODO:
+///   - 프로토타입 진입 후 추가되는 내용에 따라 ( 현 스크립트는 중요도3으로 지정) 중요도3중 최우선이 되거나 중요도3 에서 후 순위가 됩니다 )
+///   - 추후 씬 매니저로 스크립트 변경 예정 ( 현재 목업 버전이며 프로토타입에 맞게 현 스크립트를 변경 할 예정 )
+/// </summary>
+///
+
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif

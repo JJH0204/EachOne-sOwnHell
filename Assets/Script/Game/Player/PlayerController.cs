@@ -13,6 +13,9 @@ using UnityEngine.Serialization;
 ///   - 게임오버 또는 전투불능시 움직이는걸 막습니다
 /// 우선도:
 ///   - 추후 작업 우선 순위가 높은건 *** 이며 * 가 낮아질수록 우선도가 낮습니다
+///   - 카메라(우선도 3) : 추후 시네머신 스크립트가 작성 되거나 카메라 정리 될 경우 무조건 옮길것
+///   - 벽 관통 수정(우선도 1) : 중요한 내용들이 먼저 정리 된 후 QA전 수정 하거나 버티컬 슬라이스 전 수정할것
+///   - 주석 처리 된 변수 (우선도 1) : 사용 안된 변수들을 주석 처리 해둔 상태이며 프로토타입 종료 까지 안 쓸 경우 삭제 할 예정
 /// </summary>
 
 [RequireComponent(typeof(Rigidbody), typeof(PlayerStats))]
@@ -22,6 +25,7 @@ public class PlayerController : MonoBehaviour
   public float moveSpeed = 6f;
   public float rotationSpeed = 600f;
 
+  #region 주석 처리 된 함수 *
   /*임시적 주석 처리 후 리팩토링 끝나는 날 사용처가 없다고 판단시 지울 예정
     [Header("Shooting")]
     public float fireRate = 0.15f;
@@ -30,6 +34,7 @@ public class PlayerController : MonoBehaviour
     public bool isLobby = false;
     public bool tryShoot = false;
     private float _nextFireTime;*/
+  #endregion
 
   #region Field
 
